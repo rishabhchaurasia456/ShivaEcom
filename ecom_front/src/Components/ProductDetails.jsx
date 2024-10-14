@@ -27,7 +27,7 @@ const ProductDetails = () => {
     }
     return (
         <div>
-            <div className="container-fluid mt-5 pt-5">
+            <div className="container mt-5 pt-5">
                 <div className="row">
                     <div className="col-md-6">
                         <div className="row">
@@ -35,7 +35,7 @@ const ProductDetails = () => {
                             <div className="col-md-12">
                                 <div className="row">
                                     <div className="small-img_row">
-                                        {product.images.slice(1).map((img, index) => (
+                                        {product.images.map((img, index) => (
                                             <div key={index} className="">
                                                 <img src={`http://localhost:8000/${img}`} className="small-img" width="100%" alt={`Product ${index + 1}`} />
                                             </div>
@@ -49,8 +49,8 @@ const ProductDetails = () => {
                         <h1 className="font_family">{product.title}</h1>
                         <h2 className="font_family text-danger opacity-50">${product.price}</h2>
                         <p>{product.desc}</p>
-                        <a href="/cart/" className="btn btn-primary">Add to cart</a>
-                        <button className="btn btn-primary">Add to cart</button>
+                        <a href="/cart/" className="btn btn-dark rounded-pill px-4 mx-2">Buy Now</a>
+                        <button className="btn btn-outline-dark rounded-pill px-4 mx-2">Add to cart</button>
                     </div>
                 </div>
             </div>

@@ -19,13 +19,15 @@ const UserNavbar = () => {
                 <div className="row">
                     <nav>
                         <div className='logo'>
-                            <h3>Shiva Mega Mart</h3>
+                            <h3><Link to="/" className='nav-link'>Shiva Mega Mart</Link></h3>
                         </div>
                         <div>
                             <ul id="navbar" className={clicked ? "#navbar active" : "#navbar"}>
                                 <li><Link to="/">Home</Link></li>
                                 <li><Link to="/product">Product</Link></li>
                                 <li><Link to="/feature">Feature</Link></li>
+                                <li><Link to="/feature">About us</Link></li>
+                                <li><Link to="/feature">Contact us</Link></li>
                             </ul>
                         </div>
                         <div className='float-end'>
