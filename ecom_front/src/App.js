@@ -7,6 +7,7 @@ import AdminLayout from './Layout/AdminLayout';
 import AdminDashboard from './AdminComponent/AdminDashboard';
 import Product from './Pages/Product';
 import ProductDetails from './Components/ProductDetails';
+import AdminLogin from './AdminComponent/AdminLogin';
 
 function App() {
   return (
@@ -33,6 +34,12 @@ function App() {
           } />
 
           <Route path='/admin' element={
+            <>
+              <AdminLogin/>
+            </>
+          } />
+
+          <Route path='/admin/dashboard' element={
             <AdminLayout>
               <AdminDashboard/>
             </AdminLayout>

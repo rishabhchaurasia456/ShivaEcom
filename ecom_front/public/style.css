@@ -15,7 +15,7 @@ User Header CSS
     background-color: #d5eaec;
 }
 
-.hero_top_h{
+.hero_top_h {
     font-family: "Pinyon Script", cursive;
     font-size: 30px;
 }
@@ -25,7 +25,7 @@ User Header CSS
     margin-top: 30%;
 }
 
-.hero_heading{
+.hero_heading {
     font-size: 100px;
     font-weight: 15px;
     line-height: 85px;
@@ -36,7 +36,8 @@ User Header CSS
     .hero_text_container {
         margin-top: 30%;
     }
-    .hero_heading{
+
+    .hero_heading {
         font-size: 75px;
         line-height: 65px;
     }
@@ -49,14 +50,63 @@ User Header CSS
         font-size: 70px;
         line-height: 80px;
     }
-    .hero_heading{
+
+    .hero_heading {
         font-size: 70px;
         line-height: 80px;
     }
 }
 
 /* ------------------------------------------
-User Footer CSS
+Product card CSS
+------------------------------------------ */
+.product_card_body {
+    margin: 2px;
+}
+
+.product_card_title {
+    margin-top: 5px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.product_card_price {
+    font-size: 20px;
+    font-weight: 200;
+}
+
+.product_card_star {
+    color: yellow;
+}
+
+.product_card_pack {
+    float: right;
+}
+
+/* ------------------------------------------
+Why image CSS
+------------------------------------------ */
+.why_section {
+    margin-top: 40px;
+}
+.why_img {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.why_heading{
+    margin-top: 10px;
+    text-align: center;
+}
+
+.why_para{
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* ------------------------------------------
+product details CSS
 ------------------------------------------ */
 #productimg {
     margin-right: 10px;
@@ -74,10 +124,10 @@ User Footer CSS
     border: 0px solid;
     margin: 2px;
     border-radius: 10px;
-    
+
 }
 
-.small-img_row{
+.small-img_row {
     display: flex;
 }
 
