@@ -8,6 +8,9 @@ import AdminDashboard from './AdminComponent/AdminDashboard';
 import Product from './Pages/Product';
 import ProductDetails from './Components/ProductDetails';
 import AdminLogin from './AdminComponent/AdminLogin';
+import MyListing from './AdminComponent/MyListing';
+import NewListingForm from './AdminComponent/NewListingForm';
+import EditProductdetails from './AdminComponent/EditProductdetails';
 
 function App() {
   return (
@@ -42,6 +45,26 @@ function App() {
           <Route path='/admin/dashboard' element={
             <AdminLayout>
               <AdminDashboard/>
+            </AdminLayout>
+          } />
+
+          <Route path='/admin/mylisting' element={
+            <AdminLayout>
+              <MyListing/>
+            </AdminLayout>
+          } />
+
+          <Route path='/admin/add_new_listing' element={
+            <AdminLayout>
+              <NewListingForm/>
+            </AdminLayout>
+          } />
+
+          <Route path='/admin/edit_listing/:id' element={
+            <AdminLayout>
+              {/* <NewListingForm/> */}
+              {/* <NewListingForm isEditMode={true} /> */}
+              <EditProductdetails/>
             </AdminLayout>
           } />
         </Routes>
