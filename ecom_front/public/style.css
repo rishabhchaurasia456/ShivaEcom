@@ -170,3 +170,31 @@ User Footer CSS
     }
 
 }
+
+/* MENScomp************************  */
+
+.mensimg {
+    width: 90%;
+    height: 450px;
+    background-position: center;
+    background-size: cover;
+
+
+}
+
+@media only screen and (max-width: 600px) {
+    .mensimg {
+        width: 80%;
+        height: 450px;
+        margin-left: 10%;
+        margin-top: 10%;
+    }
+
+    .womensimg {
+        width: 80%;
+        height: 450px;
+        margin-left: 10%;
+        margin-top: 10%;
+
+    }
+}

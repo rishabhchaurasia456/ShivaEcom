@@ -19,12 +19,13 @@ const upload = multer({
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     }
-}).fields([
-    { name: 'image1', maxCount: 1 },
-    { name: 'image2', maxCount: 1 },
-    { name: 'image3', maxCount: 1 },
-    { name: 'image4', maxCount: 1 }
-]);
+// }).fields([
+//     { name: 'image1', maxCount: 1 },
+//     { name: 'image2', maxCount: 1 },
+//     { name: 'image3', maxCount: 1 },
+//     { name: 'image4', maxCount: 1 }
+// ]);
+}).any(); 
 
 // Check File Type
 function checkFileType(file, cb) {

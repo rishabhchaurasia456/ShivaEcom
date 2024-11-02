@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Card from '../Components/Card';
 import axios from 'axios';
+import FilterSiderbar from '../Components/FilterSiderbar';
 
 const Product = () => {
     const [products, setProducts] = useState([]);  // State to hold the products
@@ -21,13 +22,23 @@ const Product = () => {
 
     return (
         <div>
-            <div className="container-fluid mt-5">
-                <div className="row mt-5 pt-5">
-                    {products.map((product) => (
-                        <Card key={product._id} product={product} />
-                    ))}
+        <div className="container-fluid">
+            <div className="row">
+                <div className="col-md-3">
+                    filter
+                    <FilterSiderbar/>
+                </div>
+                <div className="col-md-9">
+                    <div className="container-fluid mt-5">
+                        <div className="row mt-5 pt-5">
+                            {products.map((product) => (
+                                <Card key={product._id} product={product} />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 }

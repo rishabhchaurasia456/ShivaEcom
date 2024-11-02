@@ -4,51 +4,62 @@ const Product = require('../models/product');
 const ctrl_Product_entry = async (req, res) => {
     try {
         const images = [];
-        if (req.files) {
-            for (let key in req.files) {
-                if (req.files[key]) {
-                    req.files[key].forEach((file) => {
-                        images.push(file.path);
-                    });
-                }
-            }
+
+        // Check if files exist and handle the files array
+        if (req.files && req.files.length > 0) {
+            req.files.forEach((file) => {
+                images.push(file.path); // Store the file path of each uploaded image
+            });
         }
 
+        // Destructure form fields from req.body and provide fallback values if needed
         const { title, mrp, price, desc, sku, category, stockQuantity, listingStatus, color, size } = req.body;
 
+        // Validate required fields
+        // if (!listingStatus) {
+        //     return res.status(400).json({ message: 'listingStatus is required' });
+        // }
+
+        // if (!stockQuantity) {
+        //     return res.status(400).json({ message: 'stock quantity is required' });
+        // }
+
+        // Create a new product with all the form data
         const newProduct = new Product({
             images,
             title,
             mrp,
             price,
-            listingStatus,
+            listingStatus, // Ensure this is provided
             desc,
             sku,
             category,
             stock: {
-                quantity: stockQuantity,  // Add stock quantity
-                // status: stockStatus,      // Add stock status
+                quantity: stockQuantity,  // Add stock quantity (provide default if none)
             },
             attributes: {
                 color,  // Add color
                 size,   // Add size
             },
         });
-        console.log("newProduct",newProduct)
 
+        console.log("newProduct", newProduct); // Log the new product
+
+        // Save the new product to the database
         await newProduct.save();
+
+        // Return a success response
         res.status(201).json({ message: 'Product created successfully', product: newProduct });
     } catch (error) {
+        console.error('Server Error:', error); // Log the error for debugging
         res.status(500).json({ message: 'Server error', error });
     }
 };
 
-
-
 const ctrl_Product_get = async (req, res) => {
     try {
         const getallproduct = await Product.find()
-        res.status(200).json({message: "Product fetch successfully", getallproduct})
+        res.status(200).json({ message: "Product fetch successfully", getallproduct })
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -71,7 +82,6 @@ const ctrl_edit_Product = async (req, res) => {
     try {
         const _id = req.params.id;
         console.log(`Product ID: ${_id}`);
-        console.log('Request Body:', req.body); // Check if body is correctly parsed
 
         // Find the product by its ID
         const product = await Product.findById(_id);
@@ -79,23 +89,28 @@ const ctrl_edit_Product = async (req, res) => {
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        // Collect updated images if they are uploaded
-        const images = [];
-        if (req.files) {
-            // Check if each image exists and add its path to the images array
-            if (req.files.image1) images.push(req.files.image1[0].path);
-            if (req.files.image2) images.push(req.files.image2[0].path);
-            if (req.files.image3) images.push(req.files.image3[0].path);
-            if (req.files.image4) images.push(req.files.image4[0].path);
+        // Collect new uploaded images if they exist
+        let newImages = [];
+        if (req.files && req.files.length > 0) {
+            newImages = req.files.map((file) => file.path);
         }
 
-        console.log('Images:', images); // Log the collected images
+        console.log('New Images:', newImages);
+
+        // The existing images coming from the frontend (after possible removal)
+        const existingImages = req.body.existingImages || [];
+
+        console.log('Existing Images from Request:', existingImages);
+
+        // Merge existing and new images
+        const updatedImages = [...existingImages, ...newImages];
+
+        console.log('Updated Images:', updatedImages);
 
         // Extract other fields from the request body
         const { title, mrp, price, desc, sku, category, stockQuantity, listingStatus, color, size } = req.body;
-        console.log('Payload:', { title, mrp, price, desc, sku, category, stockQuantity, listingStatus, color, size });
 
-        // Update the product fields if they are provided in the request
+        // Update product fields if provided in the request
         product.title = title || product.title;
         product.mrp = mrp || product.mrp;
         product.price = price || product.price;
@@ -104,10 +119,9 @@ const ctrl_edit_Product = async (req, res) => {
         product.sku = sku || product.sku;
         product.category = category || product.category;
 
-        // Update stock information (quantity and status)
+        // Update stock information (quantity)
         if (product.stock) {
             product.stock.quantity = stockQuantity || product.stock.quantity;
-            // product.stock.status = stockStatus || product.stock.status;
         }
 
         // Update attributes (color and size)
@@ -116,9 +130,9 @@ const ctrl_edit_Product = async (req, res) => {
             product.attributes.size = size || product.attributes.size;
         }
 
-        // Update product images only if new ones are provided
-        if (images.length > 0) {
-            product.images = images;
+        // Update images array in the product document
+        if (updatedImages.length > 0) {
+            product.images = updatedImages;
         }
 
         // Save the updated product to the database
@@ -134,10 +148,9 @@ const ctrl_edit_Product = async (req, res) => {
 };
 
 
-
-module.exports = { 
-    ctrl_Product_entry, 
-    ctrl_Product_get, 
+module.exports = {
+    ctrl_Product_entry,
+    ctrl_Product_get,
     ctrl_Product_details,
     ctrl_edit_Product
- };
+};

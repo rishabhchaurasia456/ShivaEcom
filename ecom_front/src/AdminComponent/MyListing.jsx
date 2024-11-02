@@ -39,6 +39,7 @@ const MyListing = () => {
                     <thead>
                         <tr>
                             <th>Product Details</th>
+                            <th>Sku ID</th>
                             <th>Listing Price</th>
                             <th>Mrp</th>
                             <th>Stock</th>
@@ -69,6 +70,7 @@ const MyListing = () => {
                                     </span>
                                     {item.title}
                                 </td>
+                                <td>{item.sku}</td>
                                 <td>{item.price}</td>
                                 <td>{item.mrp}</td>
                                 <td>
@@ -79,7 +81,7 @@ const MyListing = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    <Link to={`/admin/edit_listing/${item._id}`}>Edit</Link>
+                                    <Link className='btn btn-primary' to={`/admin/edit_listing/${item._id}`}>Edit</Link>
                                 </td>
                             </tr>
                         ))}
