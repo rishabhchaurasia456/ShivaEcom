@@ -1,0 +1,185 @@
+// import React, { useState } from 'react'
+// import { Link } from 'react-router-dom';
+
+// const UserLogin = () => {
+//     // const [name, setName] = useState("");
+//     const [email, setEmail] = useState("");
+//     const [password, setPassword] = useState("");
+//     const [isLoggedin, setIsLoggedin] = useState(false);
+
+//     const login = (e) => {
+//         e.preventDefault();
+//         console.log(email, password);
+//         const userData = {
+//             email,
+//             password,
+//         };
+//         localStorage.setItem(
+//             "token-info",
+//             JSON.stringify(userData)
+//         );
+//         setIsLoggedin(true);
+//         // setName("");
+//         setEmail("");
+//         setPassword("");
+//     };
+
+//     const logout = () => {
+//         localStorage.removeItem("token-info");
+//         setIsLoggedin(false);
+//     };
+//     return (
+//         <div>
+//             <div class="container mt-5 pt-5">
+//                 <div class="row">
+//                     <div class="col-md-3"></div>
+//                     <div class="col-md-6">
+//                         <div>
+//                             <h1>User login</h1>
+//                             {!isLoggedin ? (
+//                                 <>
+//                                     <form action="">
+//                                         {/* <input className='form-control my-3' type="text" value={name} placeholder="Name"
+//                                             onChange={(e) => setName(e.target.value)}
+//                                         /> */}
+//                                         <input className='form-control my-3' type="email" value={email} placeholder="Email"
+//                                             onChange={(e) => setEmail(e.target.value)}
+//                                         />
+//                                         <input className='form-control my-3' type="password" value={password} placeholder="Password"
+//                                             onChange={(e) => setPassword(e.target.value)}
+//                                         />
+//                                         <button className='btn btn-success' type="submit" onClick={login}>GO</button>
+//                                     </form>
+//                                     <div>
+//                                         <Link to="/user_register" className='nav-link text-center text-primary'>New to SMM? Create an account</Link>
+//                                     </div>
+//                                 </>
+//                             ) : (
+//                                 <>
+//                                     <h1>User is logged in</h1>
+//                                     <button onClickCapture={logout}>
+//                                         logout user
+//                                     </button>
+//                                 </>
+//                             )}
+//                         </div>
+//                     </div>
+//                     <div class="col-md-3"></div>
+//                 </div>
+//             </div>
+//         </div>
+//     )
+// }
+
+// export default UserLogin
+
+
+
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import axios
+
+const UserLogin = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoggedin, setIsLoggedin] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Use useNavigate for routing
+
+    const login = async (e) => {
+        e.preventDefault();
+        console.log(email, password);
+
+        // Prepare the login data
+        const userData = {
+            email,
+            password,
+        };
+
+        try {
+            // Send POST request to the backend using Axios
+            const response = await axios.post("http://localhost:8000/api/user/get_user_login", userData);
+
+            // Check if login was successful
+            if (response.status === 200) {
+                // If successful, store token in localStorage
+                localStorage.setItem("token-info", JSON.stringify(response.data.token)); // Save token from response
+                setIsLoggedin(true);
+                setEmail(""); // Clear the input fields
+                setPassword("");
+                setError(null); // Reset error message
+                navigate("/"); // Redirect to the dashboard or home page
+            }
+        } catch (err) {
+            // Handle error response from backend
+            console.error("Login error:", err);
+            if (err.response) {
+                // If response was received but with error status
+                setError(err.response.data.message || "Login failed"); // Set error message from API
+            } else {
+                // If no response or network error
+                setError("An error occurred while trying to log in.");
+            }
+            setIsLoggedin(false); // Ensure logged-in state is false if error occurs
+        }
+    };
+
+    const logout = () => {
+        localStorage.removeItem("token-info");
+        setIsLoggedin(false);
+    };
+
+    return (
+        <div>
+            <div className="container mt-5 pt-5">
+                <div className="row">
+                    <div className="col-md-3"></div>
+                    <div className="col-md-6">
+                        <div>
+                            <h1>User login</h1>
+                            {!isLoggedin ? (
+                                <>
+                                    <form onSubmit={login}> {/* Prevent default action with onSubmit */}
+                                        <input
+                                            className="form-control my-3"
+                                            type="email"
+                                            value={email}
+                                            placeholder="Email"
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                        <input
+                                            className="form-control my-3"
+                                            type="password"
+                                            value={password}
+                                            placeholder="Password"
+                                            onChange={(e) => setPassword(e.target.value)}
+                                        />
+                                        {error && <p className="text-danger">{error}</p>} {/* Display error if any */}
+                                        <button className="btn btn-success" type="submit">
+                                            Login
+                                        </button>
+                                    </form>
+                                    <div>
+                                        <Link to="/user_register" className="nav-link text-center text-primary">
+                                            New to SMM? Create an account
+                                        </Link>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <h1>User is logged in</h1>
+                                    <button onClick={logout} className="btn btn-danger">
+                                        Logout
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className="col-md-3"></div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default UserLogin;

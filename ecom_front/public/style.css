@@ -198,3 +198,31 @@ User Footer CSS
 
     }
 }
+
+
+
+
+
+/* language translate */
+  .VIpgJd-ZVi9od-ORHb-OEVmcd{
+    display: none !important;
+  }
+
+  /* Attempts to hide the Google branding */
+#google_translate_element .goog-logo-link {
+    display: none !important;
+  }
+  
+  #google_translate_element .goog-te-gadget span {
+    display: none !important;
+  }
+
+  .VIpgJd-ZVi9od-l4eHX-hSRGPd, .VIpgJd-ZVi9od-l4eHX-hSRGPd:link{
+    display: none;
+  }
+
+
+  .goog-te-gadget {
+    /* color: transparent !important; */
+    font-size: 0px !important;
+  }

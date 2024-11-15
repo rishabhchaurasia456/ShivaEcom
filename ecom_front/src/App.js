@@ -11,6 +11,8 @@ import AdminLogin from './AdminComponent/AdminLogin';
 import MyListing from './AdminComponent/MyListing';
 import NewListingForm from './AdminComponent/NewListingForm';
 import EditProductdetails from './AdminComponent/EditProductdetails';
+import UserLogin from './Components/UserLogin';
+import UserRegister from './Components/UserRegister';
 
 function App() {
   return (
@@ -21,6 +23,18 @@ function App() {
           <Route path='/' element={
             <UserLayout>
               <Home />
+            </UserLayout>
+          } />
+
+          <Route path='/user_login' element={
+            <UserLayout>
+              <UserLogin />
+            </UserLayout>
+          } />
+
+          <Route path='/user_register' element={
+            <UserLayout>
+              <UserRegister />
             </UserLayout>
           } />
 
