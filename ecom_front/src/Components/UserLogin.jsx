@@ -47,18 +47,13 @@ const UserLogin = () => {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem("token-info");
-        setIsLoggedin(false);
-    };
-
     return (
         <div>
             <div className="container mt-5 pt-5">
                 <div className="row">
                     <div className="col-md-3"></div>
                     <div className="col-md-6">
-                        <div>
+                        <div className='card p-5 m-5'>
                             <h1>User login</h1>
                             {!isLoggedin ? (
                                 <>
@@ -86,14 +81,14 @@ const UserLogin = () => {
                                         <Link to="/user_register" className="nav-link text-center text-primary">
                                             New to SMM? Create an account
                                         </Link>
+                                        <Link to="/forget_pass" className="nav-link text-center text-primary">
+                                            Forget Password?
+                                        </Link>
                                     </div>
                                 </>
                             ) : (
                                 <>
                                     <h1>User is logged in</h1>
-                                    <button onClick={logout} className="btn btn-danger">
-                                        Logout
-                                    </button>
                                 </>
                             )}
                         </div>

@@ -89,7 +89,7 @@ const UserFooter = () => {
                   </div>
 
                   {sections.map((section, index) => (
-                    <div className="col-12 col-md-4 col-lg-2 col-xl-2 text-light p-0 m-0">
+                    <div className="col-12 col-md-4 col-lg-2 col-xl-2 text-light p-0 m-0" key={index}>
                       <div>
                         <h4 className="fw-bold mb-4">{section.heading}</h4>
                         <ul className="list-unstyled">

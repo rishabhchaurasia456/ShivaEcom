@@ -34,7 +34,7 @@ const WhyStencils = () => {
             <h1 className='text-center mt-5'>Why Stencils?</h1>
             <div className="row">
             {whydata.map((items, index) =>(
-                <div className="col-lg-3 col-md-6">
+                <div className="col-lg-3 col-md-6" key={index}>
                     <div className="why_section">
                         <img src={items.img} className='why_img' alt=''/>
                         <h2 className='why_heading'>{items.heading}</h2>

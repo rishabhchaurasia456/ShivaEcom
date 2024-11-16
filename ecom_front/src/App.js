@@ -13,6 +13,7 @@ import NewListingForm from './AdminComponent/NewListingForm';
 import EditProductdetails from './AdminComponent/EditProductdetails';
 import UserLogin from './Components/UserLogin';
 import UserRegister from './Components/UserRegister';
+import Forgetpassword from './Components/Forgetpassword';
 
 function App() {
   return (
@@ -35,6 +36,12 @@ function App() {
           <Route path='/user_register' element={
             <UserLayout>
               <UserRegister />
+            </UserLayout>
+          } />
+
+          <Route path='/forget_pass' element={
+            <UserLayout>
+              <Forgetpassword />
             </UserLayout>
           } />
 
