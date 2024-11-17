@@ -7,16 +7,14 @@ import cart from "../images/shopping-bag.png";
 const UserNavbar = () => {
   const [clicked, setClicked] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const navigate = useNavigate(); // Use useNavigate for routing
+  const navigate = useNavigate();
 
   // Check if the user is logged in by verifying if a token exists in localStorage
   const isLogin = localStorage.getItem("token-info") !== null; // Check if token is in localStorage
 
   const logout = () => {
-    // Remove the token from localStorage to log the user out
     localStorage.removeItem("token-info");
-
-    // Redirect to the login page
+    localStorage.removeItem("userId");
     navigate("/");
   };
 
@@ -93,13 +91,10 @@ const UserNavbar = () => {
                   <Link to="/product">Product</Link>
                 </li>
                 <li>
-                  <Link to="/feature">Feature</Link>
+                  <Link to="#">About us</Link>
                 </li>
                 <li>
-                  <Link to="/feature">About us</Link>
-                </li>
-                <li>
-                  <Link to="/feature">Contact us</Link>
+                  <Link to="#">Contact us</Link>
                 </li>
               </ul>
             </div>
@@ -141,11 +136,6 @@ const UserNavbar = () => {
                         <li>
                           <Link to="/orders" className="dropdown-item">
                             My Orders
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="/settings" className="dropdown-item">
-                            Settings
                           </Link>
                         </li>
                         <li>

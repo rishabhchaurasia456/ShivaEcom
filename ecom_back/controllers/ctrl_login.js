@@ -17,36 +17,6 @@ const ctrl_admin_login = async (req, res) => {
     }
 };
 
-// const ctrl_user_reg = async (req, res) => {
-//     try {
-//         const { name, email, mobile, password } = req.body;
-
-//         if (!name || !email || !mobile || !password) {
-//             return res.status(400).json({ message: 'All fields are required' });
-//         }
-
-//         // Check if the user already exists (by email or mobile)
-//         const existingUser = await UserRegister.findOne({ email });
-//         if (existingUser) {
-//             return res.status(400).json({ message: 'User already exists' });
-//         }
-
-//         const newUser = new UserRegister({
-//             name,
-//             email,
-//             mobile,
-//             password
-//         });
-
-//         await newUser.save();
-
-//         res.status(201).json({ message: 'User created successfully', user: newUser });
-//     } catch (error) {
-//         console.error("Error occurred:", error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// };
-
 const ctrl_user_reg = async (req, res) => {
     try {
         const { name, email, mobile, password } = req.body;
@@ -118,29 +88,6 @@ const ctrl_verify_otp = async (req, res) => {
     }
 };
 
-// Utility function to send OTP via email (you can customize this as needed)
-// const sendOtpToEmail = async (email, otp) => {
-//     // Example using nodemailer
-//     const nodemailer = require('nodemailer');
-//     const transporter = nodemailer.createTransport({
-//         service: 'gmail',
-//         auth: {
-//             user: 'your-email@gmail.com', // Replace with your email
-//             pass: 'your-email-password', // Replace with your email password
-//         },
-//     });
-
-//     const mailOptions = {
-//         from: 'your-email@gmail.com',
-//         to: email,
-//         subject: 'Verify Your Email - OTP',
-//         text: `Your OTP is ${otp}. It will expire in 10 minutes.`,
-//     };
-
-//     await transporter.sendMail(mailOptions);
-// };
-
-
 const ctrl_user_login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -164,15 +111,13 @@ const ctrl_user_login = async (req, res) => {
         }
 
 
-        // Create a JWT token (excluding sensitive data)
         const token = jwt.sign(
             { userId: user._id, email: user.email }, 
             secretkey, 
-            { expiresIn: '1h' } // Token expiration (optional)
+            { expiresIn: '1h' }
         );
 
-        // Send back the token in the response
-        return res.status(200).json({ message: 'Login successful', token });
+        return res.status(200).json({ message: 'Login successful', token, user });
         
     } catch (error) {
         console.error("Error occurred:", error);

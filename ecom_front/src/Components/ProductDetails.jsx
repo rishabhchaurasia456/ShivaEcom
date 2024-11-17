@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 
-const ProductDetails = () => {
+const ProductDetails = ({ cart, setCart }) => {
 
-    const { id } = useParams()
+    const { id } = useParams();
     const [product, setProduct] = useState(null);
+    const [selectedImage, setSelectedImage] = useState('');
 
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
                 const response = await axios.post(`http://localhost:8000/api/user/get_products_details/${id}`);
                 setProduct(response.data.getproductdetail);
-                console.log("sssssssssssssssssssssssssss", response)
+                setSelectedImage(response.data.getproductdetail.images[0]);
             } catch (error) {
                 console.error('Error fetching product details:', error);
             }
@@ -21,223 +22,144 @@ const ProductDetails = () => {
         fetchProductDetails();
     }, [id]);
 
+    const addToCart = async () => {
+        const rawUserId = localStorage.getItem('userId'); // Fetch raw userId from local storage
+        const userId = rawUserId?.replace(/^"|"$/g, ''); // Remove any surrounding quotes
+
+        if (!userId) {
+            console.error('User is not logged in.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:8000/api/user/cart_item_add', {
+                userId,
+                productId: product._id,
+            });
+            console.log('Cart updated:', response.data);
+
+            // Update the cart state in the parent component
+            const updatedCartResponse = await axios.post(`http://localhost:8000/api/user/user_cart/${userId}`);
+            setCart(updatedCartResponse.data.cart.products || []);
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        }
+    };
+
 
     if (!product) {
         return <p>Product not found.</p>;
     }
     return (
-        // <div>
-        //     <div className="container mt-5 pt-5">
-        //         <div className="row">
-        //             <div className="col-md-6">
-        //                 <div className="row">
-        //                     <img src={`http://localhost:8000/${product.images[0]}`} id="productimg" width="100%" alt="Product" />
-        //                     <div className="col-md-12">
-        //                         <div className="row">
-        //                             <div className="small-img_row">
-        //                                 {product.images.map((img, index) => (
-        //                                     <div key={index} className="">
-        //                                         <img src={`http://localhost:8000/${img}`} className="small-img" width="100%" alt={`Product ${index + 1}`} />
-        //                                     </div>
-        //                                 ))}
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //             <div className="col-md-6 p-4">
-        //                 <h1 className="font_family">{product.title}</h1>
-        //                 <h2 className="font_family text-danger opacity-50">${product.price}</h2>
-        //                 <p>{product.desc}</p>
-        //                 <a href="/cart/" className="btn btn-dark rounded-pill px-4 mx-2">Buy Now</a>
-        //                 <button className="btn btn-outline-dark rounded-pill px-4 mx-2">Add to cart</button>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
-
-
-
         <div className="home-section mt-5 pt-5">
-
-
-
-            <section class="bg-primary padding-y-sm">
-                {/* <div class="container">
-                        
-                            <ol class="breadcrumb ondark mb-0">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Library</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Data</li>
-                            </ol>
-                        
-                        </div>  */}
-            </section>
-
-
-
-            <section class="padding-y">
-                <div class="container">
-
-                    <div class="row">
-                        <aside class="col-lg-6">
-                            <article class="gallery-wrap">
-                                <div class="img-big-wrap img-thumbnail">
-                                    <a data-fslightbox="mygalley" data-type="image" href="assets/images/items/10.webp">
-                                        {/* <img height="560" src="assets/images/items/10.webp"/>  */}
-                                        <img src={`http://localhost:8000/${product.images[0]}`} id="productimg" height="560" width="100%" alt="Product" />
+            <section className="padding-y">
+                <div className="container">
+                    <div className="row">
+                        <aside className="col-lg-6">
+                            <article className="gallery-wrap">
+                                <div className="img-big-wrap img-thumbnail">
+                                    <a data-fslightbox="mygallery" data-type="image" href={`http://localhost:8000/${selectedImage}`}>
+                                        <img src={`http://localhost:8000/${selectedImage}`} id="productimg" height="560" width="100%" alt="Product" />
                                     </a>
                                 </div>
-                                {/* <div class="thumbs-wrap">
-                            <a data-fslightbox="mygalley" data-type="image" href="assets/images/items/10.webp" class="item-thumb"> 
-                            <img width="60" height="60" src="assets/images/items/10.webp"/> 
-                            </a>
-                            <a data-fslightbox="mygalley" data-type="image" href="assets/images/items/10.webp" class="item-thumb"> 
-                            <img width="60" height="60" src="assets/images/items/10.webp"/>  
-                            </a>
-                            <a data-fslightbox="mygalley" data-type="image" href="assets/images/items/10.webp" class="item-thumb"> 
-                            <img width="60" height="60" src="assets/images/items/10.webp"/>  
-                            </a>
-                            <a data-fslightbox="mygalley" data-type="image" href="assets/images/items/10.webp" class="item-thumb"> 
-                            <img width="60" height="60" src="assets/images/items/10.webp"/>  
-                            </a>
-                            <a data-fslightbox="mygalley" data-type="image" href="assets/images/items/10.webp" class="item-thumb"> 
-                            <img width="60" height="60" src="assets/images/items/10.webp"/>  
-                            </a>
-                            </div>  */}
-                                <div class="thumbs-wrap d-flex">
+                                <div className="thumbs-wrap d-flex">
                                     {product.images.map((img, index) => (
-                                        <div key={index} className="">
-                                            <a data-fslightbox="mygalley" data-type="image" href="assets/images/items/10.webp" class="item-thumb">
-                                                <img src={`http://localhost:8000/${img}`} width="60" height="60" alt={`Product ${index + 1}`} />
-                                            </a>
+                                        <div key={index} className="me-2">
+                                            <img
+                                                src={`http://localhost:8000/${img}`}
+                                                width="60"
+                                                height="60"
+                                                alt={`Product ${index + 1}`}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    border: selectedImage === img ? '2px solid blue' : 'none',
+                                                }}
+                                                onClick={() => setSelectedImage(img)}
+                                            />
                                         </div>
                                     ))}
                                 </div>
                             </article>
                         </aside>
-                        <main class="col-lg-6">
-                            <article class="ps-lg-3">
-                                <h4 class="title text-dark">{product.title} </h4>
-                                <div class="rating-wrap my-3">
-                                    {/* <ul class="rating-stars">
-                            <li style={{width:"80%"}} class="stars-active"> <img src="assets/images/misc/stars-active.svg" alt=""/> </li>
-                            <li> <img src="assets/images/misc/starts-disable.svg" alt=""/> </li>
-                            </ul> */}
-                                    <b class="label-rating text-warning fa fa-star"> 4.5</b>
-                                    <i class="dot"></i>
-                                    {/* <span class="label-rating text-muted"> <i class="fa fa-shopping-basket"></i> 154 orders </span>
-                            <i class="dot"></i>
-                            <span class="label-rating text-success">In stock</span> */}
+                        <main className="col-lg-6">
+                            <article className="ps-lg-3">
+                                <h4 className="title text-dark">{product.title} </h4>
+                                <div className="rating-wrap my-3">
+                                    <b className="label-rating text-warning fa fa-star"> 4.5 Rating</b>
                                 </div>
 
-                                <div class="mb-3">
-                                    <var class="price h5">&#8377;{product.price}</var>
-                                    <span class="text-decoration-line-through ms-2">&#8377;{product.mrp}</span>
+                                <div className="mb-3">
+                                    <var className="price h5">&#8377;{product.price}</var>
+                                    <span className="text-decoration-line-through ms-2">&#8377;{product.mrp}</span>
                                 </div>
 
-                                <p>Modern look and quality demo item is a streetwear-inspired collection that continues to break away from the conventions of mainstream fashion. Made in Italy, these black and brown clothing low-top shirts for men.</p>
-
-                                <dl class="row">
-                                    <dt class="col-3">Type:</dt>
-                                    <dd class="col-9">Regular</dd>
-
-                                    <dt class="col-3">Color</dt>
-                                    <dd class="col-9">Brown</dd>
-
-                                    <dt class="col-3">Material</dt>
-                                    <dd class="col-9">Cotton, Jeans </dd>
-
-                                    <dt class="col-3">Brand</dt>
-                                    <dd class="col-9">Reebook </dd>
-                                </dl>
+                                <div className="mb-3">
+                                    <h3>Description</h3>
+                                    {product.desc}
+                                </div>
 
                                 <hr />
 
-                                {/* <div class="row mb-4">
-                                    <div class="col-md-4 col-6 mb-2">
-                                        <label class="form-label">Size</label>
-                                        <select class="form-select">
-                                            <option>Small</option>
-                                            <option>Medium</option>
-                                            <option>Large</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4 col-6 mb-3">
-                                        <label class="form-label d-block">Quantity</label>
-                                        <div class="input-group input-spinner">
-                                            <button class="btn btn-icon btn-light" type="button">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#999" viewBox="0 0 24 24">
-                                                    <path d="M19 13H5v-2h14v2z"></path>
-                                                </svg>
-                                            </button>
-                                            <input class="form-control text-center" placeholder="" value="14" />
-                                            <button class="btn btn-icon btn-light" type="button">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#999" viewBox="0 0 24 24">
-                                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div> */}
-
-                                <Link to="#" class="btn  btn-warning"> Buy now </Link>
-                                <Link to="#" class="btn  btn-primary"> <i class="me-1 fa fa-shopping-basket"></i> Add to cart </Link>
-                                {/* <a href="#" class="btn  btn-light"> <i class="me-1 fa fa-heart"></i> Save </a> */}
-
+                                <Link to="#" className="btn btn-warning">Buy now</Link>&nbsp;&nbsp;&nbsp;
+                                {cart.some((item) => item.productId._id === product._id) ? (
+                                    <Link to="/cart" className="btn btn-success">Go to Cart</Link>
+                                ) : (
+                                    <button className="btn btn-primary" onClick={addToCart}>
+                                        Add to Cart
+                                    </button>
+                                )}
                             </article>
                         </main>
                     </div>
-
                 </div>
             </section>
 
-            <section class="padding-y bg-light border-top">
-                <div class="container">
-                    <div class="row">
-                        <aside class="col-lg-4">
+            <section className="padding-y bg-light border-top">
+                <div className="container">
+                    <div className="row">
+                        <aside className="col-lg-4">
 
-                            {/* <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Similar items</h5>
+                            {/* <div className="card">
+                                <div className="card-body">
+                                    <h5 className="card-title">Similar items</h5>
 
-                                    <article class="itemside mb-3">
-                                        <a href="#" class="aside">
-                                            <img src="assets/images/items/8.webp" width="96" height="96" class="img-md img-thumbnail" />
+                                    <article className="itemside mb-3">
+                                        <a href="#" className="aside">
+                                            <img src="assets/images/items/8.webp" width="96" height="96" className="img-md img-thumbnail" />
                                         </a>
-                                        <div class="info">
-                                            <a href="#" class="title mb-1"> Rucksack Backpack Large <br /> Line Mounts </a>
-                                            <strong class="price"> $38.90</strong>
+                                        <div className="info">
+                                            <a href="#" className="title mb-1"> Rucksack Backpack Large <br /> Line Mounts </a>
+                                            <strong className="price"> $38.90</strong>
                                         </div>
                                     </article>
 
-                                    <article class="itemside mb-3">
-                                        <a href="#" class="aside">
-                                            <img src="assets/images/items/9.webp" width="96" height="96" class="img-md img-thumbnail" />
+                                    <article className="itemside mb-3">
+                                        <a href="#" className="aside">
+                                            <img src="assets/images/items/9.webp" width="96" height="96" className="img-md img-thumbnail" />
                                         </a>
-                                        <div class="info">
-                                            <a href="#" class="title mb-1"> Summer New Men's Denim <br /> Jeans Shorts  </a>
-                                            <strong class="price"> $29.50</strong>
+                                        <div className="info">
+                                            <a href="#" className="title mb-1"> Summer New Men's Denim <br /> Jeans Shorts  </a>
+                                            <strong className="price"> $29.50</strong>
                                         </div>
                                     </article>
 
-                                    <article class="itemside mb-3">
-                                        <a href="#" class="aside">
-                                            <img src="assets/images/items/10.webp" width="96" height="96" class="img-md img-thumbnail" />
+                                    <article className="itemside mb-3">
+                                        <a href="#" className="aside">
+                                            <img src="assets/images/items/10.webp" width="96" height="96" className="img-md img-thumbnail" />
                                         </a>
-                                        <div class="info">
-                                            <a href="#" class="title mb-1"> T-shirts with multiple colors, for men and lady </a>
-                                            <strong class="price"> $120.00</strong>
+                                        <div className="info">
+                                            <a href="#" className="title mb-1"> T-shirts with multiple colors, for men and lady </a>
+                                            <strong className="price"> $120.00</strong>
                                         </div>
                                     </article>
 
-                                    <article class="itemside mb-3">
-                                        <a href="#" class="aside">
-                                            <img src="assets/images/items/11.webp" width="96" height="96" class="img-md img-thumbnail" />
+                                    <article className="itemside mb-3">
+                                        <a href="#" className="aside">
+                                            <img src="assets/images/items/11.webp" width="96" height="96" className="img-md img-thumbnail" />
                                         </a>
-                                        <div class="info">
-                                            <a href="#" class="title mb-1"> Blazer Suit Dress Jacket for Men, Blue color </a>
-                                            <strong class="price"> $339.90</strong>
+                                        <div className="info">
+                                            <a href="#" className="title mb-1"> Blazer Suit Dress Jacket for Men, Blue color </a>
+                                            <strong className="price"> $339.90</strong>
                                         </div>
                                     </article>
 
@@ -245,29 +167,20 @@ const ProductDetails = () => {
                             </div> */}
 
                         </aside>
-                        <div class="col-lg-8">
+                        <div className="col-lg-8">
 
-                            <div class="card">
-                                <header class="card-header">
-                                    <ul class="nav nav-tabs card-header-tabs">
-                                        <li class="nav-item">
-                                            <Link to="#" data-bs-target="#tab_specs" data-bs-toggle="tab" class="nav-link active">Specification</Link>
+                            <div className="card">
+                                <header className="card-header">
+                                    <ul className="nav nav-tabs card-header-tabs">
+                                        <li className="nav-item">
+                                            <Link to="#" data-bs-target="#tab_specs" data-bs-toggle="tab" className="nav-link active">Specification</Link>
                                         </li>
-                                        {/* <li class="nav-item">
-                                            <a href="#" data-bs-target="#tab_warranty" data-bs-toggle="tab" class="nav-link">Warranty info</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#" data-bs-target="#tab_shipping" data-bs-toggle="tab" class="nav-link">Shipping info</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#" data-bs-target="#tab_seller" data-bs-toggle="tab" class="nav-link">Seller profile</a>
-                                        </li> */}
                                     </ul>
                                 </header>
-                                <div class="tab-content">
-                                    <article id="tab_specs" class="tab-pane show active card-body">
+                                <div className="tab-content">
+                                    <article id="tab_specs" className="tab-pane show active card-body">
                                         <p>With supporting text below as a natural lead-in to additional content. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>
-                                        <ul class="list-check cols-two">
+                                        <ul className="list-check cols-two">
                                             <li>Some great feature name here </li>
                                             <li>Lorem ipsum dolor sit amet, consectetur </li>
                                             <li>Duis aute irure dolor in reprehenderit </li>
@@ -276,7 +189,7 @@ const ProductDetails = () => {
                                             <li>Some great feature name here </li>
                                             <li>Modern style and design</li>
                                         </ul>
-                                        <table class="table border table-hover">
+                                        <table className="table border table-hover">
                                             <tr>
                                                 <th>  Display: </th> <td> 13.3-inch LED-backlit display with IPS </td>
                                             </tr>
@@ -294,7 +207,7 @@ const ProductDetails = () => {
                                             </tr>
                                         </table>
                                     </article>
-                                    <article id="tab_warranty" class="tab-pane card-body">
+                                    <article id="tab_warranty" className="tab-pane card-body">
                                         Tab content or sample information now <br />
                                         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -305,7 +218,7 @@ const ProductDetails = () => {
                                         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
                                         quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
                                     </article>
-                                    <article id="tab_shipping" class="tab-pane card-body">
+                                    <article id="tab_shipping" className="tab-pane card-body">
                                         Another tab content  or sample information now <br />
                                         Dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -314,7 +227,7 @@ const ProductDetails = () => {
                                         cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
                                         proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                                     </article>
-                                    <article id="tab_seller" class="tab-pane card-body">
+                                    <article id="tab_seller" className="tab-pane card-body">
                                         Some other tab content  or sample information now <br />
                                         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

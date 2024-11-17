@@ -22,11 +22,13 @@ const UserLogin = () => {
         try {
             // Send POST request to the backend using Axios
             const response = await axios.post("http://localhost:8000/api/user/get_user_login", userData);
+            console.log(response)
 
             // Check if login was successful
             if (response.status === 200) {
                 // If successful, store token in localStorage
                 localStorage.setItem("token-info", JSON.stringify(response.data.token)); // Save token from response
+                localStorage.setItem("userId", JSON.stringify(response.data.user._id)); // Save token from response
                 setIsLoggedin(true);
                 setEmail(""); // Clear the input fields
                 setPassword("");

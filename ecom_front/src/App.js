@@ -1,6 +1,7 @@
 import './App.css';
+import axios from 'axios';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import UserLayout from './Layout/UserLayout';
 import Home from './Pages/Home';
 import AdminLayout from './Layout/AdminLayout';
@@ -14,8 +15,30 @@ import EditProductdetails from './AdminComponent/EditProductdetails';
 import UserLogin from './Components/UserLogin';
 import UserRegister from './Components/UserRegister';
 import Forgetpassword from './Components/Forgetpassword';
+import Cart from './Components/Cart';
+import MyAccount from './Components/MyAccount';
 
 function App() {
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      const rawUserId = localStorage.getItem('userId');
+      const userId = rawUserId?.replace(/^"|"$/g, '');
+
+      if (!userId) return;
+
+      try {
+        const response = await axios.post(`http://localhost:8000/api/user/user_cart/${userId}`);
+        setCart(response.data.cart.products || []);
+      } catch (error) {
+        console.error('Error fetching cart:', error);
+      }
+    };
+
+    fetchCart();
+  }, []);
+
   return (
     <div>
       <BrowserRouter>
@@ -51,33 +74,45 @@ function App() {
             </UserLayout>
           } />
 
+          <Route path='/user_acc' element={
+            <UserLayout>
+              <MyAccount />
+            </UserLayout>
+          } />
+
+          <Route path='/cart' element={
+            <UserLayout>
+              <Cart cart={cart} />
+            </UserLayout>
+          } />
+
           <Route path='/product_details/:id' element={
             <UserLayout>
-              <ProductDetails />
+              <ProductDetails cart={cart} setCart={setCart} />
             </UserLayout>
           } />
 
           <Route path='/admin' element={
             <>
-              <AdminLogin/>
+              <AdminLogin />
             </>
           } />
 
           <Route path='/admin/dashboard' element={
             <AdminLayout>
-              <AdminDashboard/>
+              <AdminDashboard />
             </AdminLayout>
           } />
 
           <Route path='/admin/mylisting' element={
             <AdminLayout>
-              <MyListing/>
+              <MyListing />
             </AdminLayout>
           } />
 
           <Route path='/admin/add_new_listing' element={
             <AdminLayout>
-              <NewListingForm/>
+              <NewListingForm />
             </AdminLayout>
           } />
 
@@ -85,7 +120,7 @@ function App() {
             <AdminLayout>
               {/* <NewListingForm/> */}
               {/* <NewListingForm isEditMode={true} /> */}
-              <EditProductdetails/>
+              <EditProductdetails />
             </AdminLayout>
           } />
         </Routes>
