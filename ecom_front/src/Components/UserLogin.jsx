@@ -34,6 +34,7 @@ const UserLogin = () => {
                 setPassword("");
                 setError(null); // Reset error message
                 navigate("/"); // Redirect to the dashboard or home page
+                window.location.reload();
             }
         } catch (err) {
             // Handle error response from backend

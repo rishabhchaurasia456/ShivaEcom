@@ -15,6 +15,7 @@ const UserNavbar = () => {
   const logout = () => {
     localStorage.removeItem("token-info");
     localStorage.removeItem("userId");
+    window.location.reload();
     navigate("/");
   };
 
