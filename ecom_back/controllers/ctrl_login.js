@@ -112,13 +112,13 @@ const ctrl_user_login = async (req, res) => {
 
 
         const token = jwt.sign(
-            { userId: user._id, email: user.email }, 
-            secretkey, 
+            { userId: user._id, email: user.email },
+            secretkey,
             { expiresIn: '1h' }
         );
 
         return res.status(200).json({ message: 'Login successful', token, user });
-        
+
     } catch (error) {
         console.error("Error occurred:", error);
         res.status(500).json({ error: 'Internal Server Error' });

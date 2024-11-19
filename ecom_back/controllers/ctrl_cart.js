@@ -102,9 +102,44 @@ const ctrl_user_cart = async (req, res) => {
     }
 };
 
+const ctrl_cart_item_delete = async (req, res) => {
+    const { userId, productId } = req.body;
+
+    if (!userId || !productId) {
+        return res.status(400).json({ error: 'User ID and Product ID are required' });
+    }
+
+    try {
+        const cart = await Cart.findOne({ userId });
+
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        const productIndex = cart.products.findIndex(
+            (item) => item.productId.toString() === productId
+        );
+
+        if (productIndex === -1) {
+            return res.status(404).json({ message: 'Product not found in cart' });
+        }
+
+        // Remove the product from the cart
+        cart.products.splice(productIndex, 1);
+
+        // Save the updated cart
+        await cart.save();
+
+        res.status(200).json({ message: 'Product removed from cart', cart })
+    } catch (error) {
+        console.error('Error delete from cart:', error);
+        res.status(500).json({ error: 'Failed to delete product from cart' });
+    }
+};
 
 module.exports = {
     ctrl_cart_item_add,
     ctrl_cart_item_remove,
-    ctrl_user_cart
+    ctrl_user_cart,
+    ctrl_cart_item_delete
 }

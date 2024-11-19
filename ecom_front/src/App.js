@@ -17,6 +17,8 @@ import UserRegister from './Components/UserRegister';
 import Forgetpassword from './Components/Forgetpassword';
 import Cart from './Components/Cart';
 import MyAccount from './Components/MyAccount';
+import Checkout from './Components/Checkout';
+import Address from './Components/Address';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -80,9 +82,21 @@ function App() {
             </UserLayout>
           } />
 
+          <Route path='/address' element={
+            <UserLayout>
+              <Address />
+            </UserLayout>
+          } />
+
           <Route path='/cart' element={
             <UserLayout>
               <Cart cart={cart} />
+            </UserLayout>
+          } />
+
+          <Route path='/checkout' element={
+            <UserLayout>
+              <Checkout />
             </UserLayout>
           } />
 
