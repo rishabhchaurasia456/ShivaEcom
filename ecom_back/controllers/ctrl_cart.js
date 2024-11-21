@@ -137,9 +137,37 @@ const ctrl_cart_item_delete = async (req, res) => {
     }
 };
 
+const ctrl_clear_UserCart = async (req, res) => {
+    const { userId } = req.params;
+
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    try {
+        // Find the user's cart and empty the products array
+        const cart = await Cart.findOneAndUpdate(
+            { userId },
+            { $set: { products: [] } }, // Clear the products in the cart
+            { new: true } // Return the updated cart
+        );
+
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        res.status(200).json({ message: 'Cart cleared successfully' });
+    } catch (error) {
+        console.error('Error clearing cart:', error);
+        res.status(500).json({ error: 'Failed to clear cart' });
+    }
+};
+
+
 module.exports = {
     ctrl_cart_item_add,
     ctrl_cart_item_remove,
     ctrl_user_cart,
-    ctrl_cart_item_delete
+    ctrl_cart_item_delete,
+    ctrl_clear_UserCart
 }

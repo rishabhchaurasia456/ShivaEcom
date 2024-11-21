@@ -6,6 +6,7 @@ const cors = require("cors");
 const path = require('path');
 const admin = require("./routes/admin_routes")
 const user = require("./routes/user_routes")
+const payment = require("./routes/payment")
 
 // Serve static files from the 'uploads' folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/admin', admin);
 app.use('/api/user', user);
+app.use('/api/user/payment', payment);
 
 
 app.listen(port, () => {

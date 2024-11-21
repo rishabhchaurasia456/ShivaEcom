@@ -19,6 +19,7 @@ import Cart from './Components/Cart';
 import MyAccount from './Components/MyAccount';
 import Checkout from './Components/Checkout';
 import Address from './Components/Address';
+import User_Order from './Components/User_Order';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -85,6 +86,12 @@ function App() {
           <Route path='/address' element={
             <UserLayout>
               <Address />
+            </UserLayout>
+          } />
+
+          <Route path='/orders' element={
+            <UserLayout>
+              <User_Order />
             </UserLayout>
           } />
 

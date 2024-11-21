@@ -1,104 +1,14 @@
-// import React, { useEffect, useState } from 'react'
-// import axios from 'axios';
-
-// const Checkout = () => {
-
-//     const [userDetails, setUserDetails] = useState("")
-
-//     const rawUserId = localStorage.getItem('userId'); // Fetch raw userId from local storage
-//     const userId = rawUserId?.replace(/^"|"$/g, ''); // Remove any surrounding quotes
-
-//     useEffect(() => {
-//         const getuserdetails = async () => {
-//             try {
-//                 const response = await axios.post(`http://localhost:8000/api/user/get_user_details/${userId}`);
-
-//                 console.log("ccccccccccccccccccccc", response.data.address);
-//                 setUserDetails(response.data.address)
-//             } catch (error) {
-//                 console.error("Error fetching products:", error);
-//             }
-//         };
-
-//         getuserdetails();
-//     }, []);
-
-//     return (
-//         <div>
-//             <div className="container">
-//                 <div className="row mt-5 pt-5">
-//                     <div className="col-sm-6 mt-5">
-//                         <h4>Order Summary</h4>
-//                         <div className="card mb-2">
-//                             <div className="card-body">
-//                                 <h5>Product: stencils</h5>
-//                                 <p>Quantity: 4</p>
-//                                 <p className="fw-bold">Price: 199</p>
-//                             </div>
-
-//                             <p className="ms-3 fw-bold">Total Cost = 199</p>
-
-
-//                             <div className="form-group">
-//                                 <label for="amount" className="m-3 fw-bold">Amount :</label>
-//                                 <input type="number" name="amount" id="amount" className="border-0" value="{{totalamount}}" readonly />
-//                             </div>
-
-//                         </div>
-//                         <small>Term and Condition: Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, ullam saepe! Iure optio repellat dolor velit, minus rem. Facilis cumque neque numquam laboriosam, accusantium adipisci nisi nihil in et quis?</small>
-//                     </div>
-
-//                     <div className="col-sm-4 offset-sm-1 mt-5">
-//                         <h4>Select Shipping Address</h4>
-//                         <form action="/paymentdone/" method="POST">
-//                             <div>
-//                                 {Array.isArray(userDetails) && userDetails.length > 0 ? (
-//                                     userDetails.map((item, index) => (
-//                                         <div className='card p-4 m-2' key={index}>
-//                                             <div>Name: {item.name}</div>
-//                                             <div>Mobile No: {item.mobile}</div>
-//                                             <div>Locality: {item.locality}</div>
-//                                             <div>City: {item.city}</div>
-//                                             <div>State: {item.state}</div>
-//                                             <div>Zipcode: {item.zipcode}</div>
-//                                         </div>
-//                                     ))
-//                                 ) : (
-//                                     <div>No addresses found.</div>
-//                                 )}
-//                             </div>
-
-//                             <div className="form-check mt-2 mb-5">
-//                                 <input className="form-check-input" type="radio" name="custid" id="custadd{{forloop.counter}}" value="{{add.id}}" />
-//                                 <label className="form-check-label fw-bold" for="">
-//                                     Address: c block </label>
-//                             </div>
-//                             <div id="add_message"></div>
-//                             <div className="text-end">
-//                                 <button type="submit" id="rzp-button1" className="btn btn-warning mt-3 px-5 fw-bold">Continue Razor Pay</button>
-//                             </div>
-//                         </form>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
-
-// export default Checkout
-
-
-
-
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom'; // Import useLocation
+import { useLocation, useNavigate } from 'react-router-dom'; // Import useLocation
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const location = useLocation(); // Use the location hook to access the state
   const { cart, totalAmount } = location.state || {}; // Extract cart and totalAmount from state
 
   const [userDetails, setUserDetails] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState(null);
   const rawUserId = localStorage.getItem('userId'); // Fetch raw userId from local storage
   const userId = rawUserId?.replace(/^"|"$/g, ''); // Remove any surrounding quotes
 
@@ -114,6 +24,94 @@ const Checkout = () => {
 
     getuserdetails();
   }, [userId]);
+
+  const handleAddressChange = (index) => {
+    setSelectedAddress(index); // Set selected address index
+  };
+
+  const initiatePayment = async (event) => {
+    event.preventDefault(); // Prevent form submission (page reload)
+
+    if (selectedAddress === null) {
+      alert("Please select a shipping address!");
+      return;
+    }
+
+    try {
+      // Call your backend to create an order and get the Razorpay order ID
+      const response = await axios.post('http://localhost:8000/api/user/payment/order_payment', {
+        amount: totalAmount * 100, // Amount in paise (Razorpay expects paise, not rupees)
+        userId,
+      });
+
+      const { orderId, currency, razorpayKey } = response.data;
+
+      // Initialize Razorpay with the order details
+      const options = {
+        key: razorpayKey, // Your Razorpay Key ID (from backend)
+        amount: totalAmount * 100, // Amount in paise
+        currency: currency,
+        name: 'Your Store Name',
+        description: 'Order Payment',
+        order_id: orderId,
+        // handler: function (response) {
+        //   // Handle success
+        //   alert('Payment successful!');
+        //   console.log(response);
+        //   // You can send payment details to the backend here for further processing
+        // },
+
+        handler: async function (paymentResponse) {
+          // Handle payment success
+
+          alert('Payment successful!');
+
+          // Call the API to clear the cart after successful payment
+          try {
+            await axios.delete(`http://localhost:8000/api/user/clear_cart/${userId}`);
+
+            // Clear the cart from localStorage
+            localStorage.removeItem('cart');
+
+            // Redirect to the Orders page
+            navigate('/orders');
+          } catch (error) {
+            console.error('Error while clearing cart:', error);
+            alert('Failed to clear cart.');
+          }
+
+          // Place the order after payment completion
+          try {
+            await axios.post('http://localhost:8000/api/user/user_place_order', {
+              userId,
+              orderId,
+              cart,
+              totalAmount,
+              address: userDetails[selectedAddress],
+              paymentResponse,
+            });
+          } catch (error) {
+            console.error('Error while placing order:', error);
+            alert('Failed to place order.');
+          }
+        },
+        prefill: {
+          name: userDetails[selectedAddress].name,
+          email: userDetails[selectedAddress].email,
+          contact: userDetails[selectedAddress].mobile,
+        },
+        theme: {
+          color: '#F37254',
+        },
+      };
+
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+    } catch (error) {
+      console.error('Error initiating payment:', error);
+      alert('Failed to initiate payment. Please try again.');
+    }
+  };
 
   return (
     <div>
@@ -138,22 +136,34 @@ const Checkout = () => {
 
           <div className="col-sm-4 offset-sm-1 mt-5">
             <h4>Select Shipping Address</h4>
-            <form>
+            <form onSubmit={initiatePayment}> {/* Use onSubmit to handle form submission */}
               {Array.isArray(userDetails) && userDetails.length > 0 ? (
                 userDetails.map((item, index) => (
-                  <div className='card p-4 m-2' key={index}>
-                    <div>Name: {item.name}</div>
-                    <div>Mobile No: {item.mobile}</div>
-                    <div>Locality: {item.locality}</div>
-                    <div>City: {item.city}</div>
-                    <div>State: {item.state}</div>
-                    <div>Zipcode: {item.zipcode}</div>
+                  <div key={index}>
+                    <input
+                      type="radio"
+                      id={`address-${index}`}
+                      name="address"
+                      checked={selectedAddress === index}
+                      onChange={() => handleAddressChange(index)}
+                    />
+                    <label htmlFor={`address-${index}`} className="ms-2">Select this address</label>
+                    <div className='card p-4 m-2'>
+                      <div>Name: {item.name}</div>
+                      <div>Mobile No: {item.mobile}</div>
+                      <div>Locality: {item.locality}</div>
+                      <div>City: {item.city}</div>
+                      <div>State: {item.state}</div>
+                      <div>Zipcode: {item.zipcode}</div>
+                    </div>
                   </div>
                 ))
               ) : (
                 <div>No addresses found.</div>
               )}
-              <button type="submit" className="btn btn-warning mt-3 px-5 fw-bold">Continue Razor Pay</button>
+              <button type="submit" className="btn btn-warning mt-3 px-5 fw-bold" disabled={selectedAddress === null}>
+                Continue Razor Pay
+              </button>
             </form>
           </div>
         </div>
