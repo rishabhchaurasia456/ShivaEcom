@@ -1,5 +1,40 @@
 const Order = require('../models/order');
-// const axios = require('axios');
+const User = require('../models/user');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // Use your email provider's service (e.g., 'gmail', 'sendgrid', etc.)
+  auth: {
+    user: 'rishabhchaurasia456@gmail.com', // Your email address
+    pass: 'qlhx mxrm qrfw jpjt', // Your email password or app-specific password
+  },
+});
+
+const sendOrderConfirmationEmail = (userEmail, orderId) => {
+  const mailOptions = {
+    from: 'rishabhchaurasia456@gmail.com',
+    to: userEmail,
+    subject: `Order Confirmation - Order #${orderId}`,
+    text: `Dear Customer,
+
+    Thank you for your order! Your order with ID #${orderId} has been placed successfully. We are processing it and will send you an update shortly.
+
+    Best regards,
+    Your Company Name`,
+    html: `<p>Dear Customer,</p>
+           <p>Thank you for your order! Your order with ID <strong>#${orderId}</strong> has been placed successfully. We are processing it and will send you an update shortly.</p>
+           <p>Best regards,<br>Shiva Mega Mart</p>`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error);
+    } else {
+      console.log('Order confirmation email sent:', info.response);
+    }
+  });
+};
+
 
 const ctrl_user_order_placed = async (req, res) => {
   const { userId, orderId, cart, totalAmount, address, paymentResponse } = req.body;
@@ -23,6 +58,12 @@ const ctrl_user_order_placed = async (req, res) => {
     });
 
     await order.save();
+
+    // Fetch the user to get the email
+    const user = await User.findById(userId); // Fetch user by userId
+    if (user) {
+      sendOrderConfirmationEmail(user.email, Order._id); // Send the confirmation email
+    }
 
     res.status(201).json({ message: 'Order placed successfully', order });
   } catch (error) {

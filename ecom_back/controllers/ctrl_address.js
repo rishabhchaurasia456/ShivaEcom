@@ -35,33 +35,6 @@ const ctrl_user_address = async (req, res) => {
     }
 }
 
-// const ctrl_get_user_details = async (req, res) => {
-//     const { userId } = req.params;
-
-//     if (!userId) {
-//         return res.status(400).json({ error: 'User ID is required' });
-//     }
-
-//     try {
-//         // Convert userId to an ObjectId
-//         userId = mongoose.Types.ObjectId(userId.trim());
-
-//         // Find address based on userId
-//         const address = await Address.findOne({ userId });
-
-//         if (!address) {
-//             return res.status(404).json({ error: 'Address not found for this user' });
-//         }
-
-//         // Log or return the address details
-//         console.log('Address found:', address);
-//         return res.status(200).json(address);
-//     } catch (error) {
-//         console.error('Error fetching address:', error);
-//         res.status(500).json({ error: 'Failed to fetch address' });
-//     }
-// };
-
 const ctrl_get_user_details = async (req, res) => {
     let { userId } = req.params;
 

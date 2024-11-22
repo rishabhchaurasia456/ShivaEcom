@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Address = () => {
-    // State variables for each input field
-    // const [userId, setUserId] = useState('');
     const navigate = useNavigate()
     const [name, setName] = useState('');
     const [mobile, setMobile] = useState('');
@@ -40,7 +38,6 @@ const Address = () => {
             if (response.ok) {
                 setResponseMessage('Address added successfully!');
                 // Reset the form fields
-                // setUserId('');
                 setName('');
                 setMobile('');
                 setLocality('');
@@ -87,17 +84,6 @@ const Address = () => {
                                     required
                                 />
                             </div>
-                            {/* <div className="form-group">
-                            <label htmlFor="mobile">Mobile:</label>
-                            <input
-                                className="form-control"
-                                type="text"
-                                id="mobile"
-                                value={mobile}
-                                onChange={(e) => setMobile(e.target.value)}
-                                required
-                            />
-                        </div> */}
                             <div className="form-group">
                                 <label htmlFor="locality">Locality:</label>
                                 <input

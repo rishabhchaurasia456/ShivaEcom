@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-// const { param } = require('../routes/user_routes.js');
 
 const ctrl_Product_entry = async (req, res) => {
     try {
