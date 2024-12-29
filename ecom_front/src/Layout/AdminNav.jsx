@@ -21,7 +21,7 @@ const AdminNav = () => {
                                         <Link className="nav-link" to="/admin/mylisting">My Listing</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" to="#">My orders</Link>
+                                        <Link className="nav-link" to="/admin/myorders">My orders</Link>
                                     </li>
                                 </ul>
                                 <form className="d-flex" role="search">

@@ -23,6 +23,7 @@ const orderSchema = new mongoose.Schema({
     razorpayOrderId: String,
     razorpaySignature: String,
   },
+  status: { type: String, enum: ['Pending', 'Handover'], default: 'Pending' }, // Add status field
 }, { timestamps: true, collection: 'Order' });
 
 const Order = mongoose.model('Order', orderSchema);

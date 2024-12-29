@@ -35,7 +35,6 @@ const sendOrderConfirmationEmail = (userEmail, orderId) => {
   });
 };
 
-
 const ctrl_user_order_placed = async (req, res) => {
   const { userId, orderId, cart, totalAmount, address, paymentResponse } = req.body;
 
@@ -73,28 +72,64 @@ const ctrl_user_order_placed = async (req, res) => {
 };
 
 const ctrl_get_UserOrders = async (req, res) => {
-    const { userId } = req.params;
+  const { userId } = req.params;
 
-    if (!userId) {
-        return res.status(400).json({ error: 'User ID is required' });
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    // Fetch the orders based on the userId
+    const orders = await Order.find({ userId }).populate('items.productId');
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: 'No orders found for this user' });
     }
 
-    try {
-        // Fetch the orders based on the userId
-        const orders = await Order.find({ userId }).populate('items.productId');
-        
-        if (orders.length === 0) {
-            return res.status(404).json({ message: 'No orders found for this user' });
-        }
-
-        res.status(200).json({ orders });
-    } catch (error) {
-        console.error('Error fetching orders:', error);
-        res.status(500).json({ error: 'Failed to fetch orders' });
-    }
+    res.status(200).json({ orders });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
 };
 
+const ctrl_Orders_get = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate('userId', 'name email') // Populates user details
+      .populate('items.productId', 'name price images title'); // Populates product details including images
+
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'Server Error', error });
+  }
+};
+
+const ctrl_Orders_status = async (req, res) => {
+  const { orderIds, status } = req.body;
+
+  if (!orderIds || !status) {
+    return res.status(400).json({ message: 'Order IDs and status are required.' });
+  }
+
+  try {
+    // Update the status for the selected orders
+    await Order.updateMany(
+      { _id: { $in: orderIds } },
+      { $set: { status } }
+    );
+
+    res.status(200).json({ message: 'Order status updated successfully.' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    res.status(500).json({ message: 'Internal Server Error.' });
+  }
+}
+
 module.exports = {
-    ctrl_user_order_placed,
-    ctrl_get_UserOrders
+  ctrl_user_order_placed,
+  ctrl_get_UserOrders,
+  ctrl_Orders_get,
+  ctrl_Orders_status
 }

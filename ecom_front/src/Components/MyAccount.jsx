@@ -1,11 +1,9 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const MyAccount = () => {
-
-  const [userDetails, setUserDetails] = useState("")
-
+  const [userDetails, setUserDetails] = useState(null); // Object instead of string to hold user info and address
   const rawUserId = localStorage.getItem('userId'); // Fetch raw userId from local storage
   const userId = rawUserId?.replace(/^"|"$/g, ''); // Remove any surrounding quotes
 
@@ -14,16 +12,15 @@ const MyAccount = () => {
       try {
         const response = await axios.post(`http://localhost:8000/api/user/get_user_details/${userId}`);
 
-        console.log("ccccccccccccccccccccc", response.data.address);
-        setUserDetails(response.data.address)
+        console.log("User Details:", response.data); // Check if data includes user details and address
+        setUserDetails(response.data); // Assuming the response has both user info and address
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching user details:", error);
       }
     };
 
     getuserdetails();
-  }, []);
-
+  }, [userId]);
 
   return (
     <div>
@@ -32,19 +29,31 @@ const MyAccount = () => {
           <div className="col-md-6 mt-5 p-5">
             <h2>My Details</h2>
             <div className="card p-4">
-              <div>Name</div>
-              <div>Email Id</div>
-              <div>Mobile NO</div>
-              <div>Password</div>
+              {userDetails ? (
+                <>
+                  <div>Name: {userDetails.name}</div>
+                  <div>Email Id: {userDetails.email}</div>
+                  <div>Mobile No: {userDetails.mobile}</div>
+                  <div>Password: {userDetails.password}</div>
+                </>
+              ) : (
+                <div>Loading user details...</div>
+              )}
             </div>
           </div>
           <div className="col-md-6 mt-5 p-5">
-            <h2>My Address</h2>
-            <Link to="/address" className='btn btn-success float-end' >Add Address</Link>
+              <div className="row">
+                <div className="col">
+                  <h2>My Address</h2>
+                </div>
+                <div className="col">
+                  <Link to="/address" className="btn btn-success float-end">Add Address</Link>
+                </div>
+              </div>
             <div>
-              {Array.isArray(userDetails) && userDetails.length > 0 ? (
-                userDetails.map((item, index) => (
-                  <div className='card p-4 m-2' key={index}>
+              {userDetails && userDetails.address && Array.isArray(userDetails.address) && userDetails.address.length > 0 ? (
+                userDetails.address.map((item, index) => (
+                  <div className="card p-4 m-2" key={index}>
                     <div>Name: {item.name}</div>
                     <div>Mobile No: {item.mobile}</div>
                     <div>Locality: {item.locality}</div>
@@ -61,7 +70,7 @@ const MyAccount = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MyAccount
+export default MyAccount;

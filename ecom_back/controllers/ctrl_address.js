@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Address = require('../models/address');
+const User = require('../models/user');
 
 // Example controller to add an address
 const ctrl_user_address = async (req, res) => {
@@ -49,27 +50,34 @@ const ctrl_get_user_details = async (req, res) => {
     }
 
     try {
-        // Convert userId to an ObjectId using 'new' keyword
+        // Convert userId to an ObjectId
         userId = new mongoose.Types.ObjectId(userId.trim());
 
-        // Query the Address collection based on the userId
-        const address = await Address.findOne({ userId });
+        // Fetch the user details from the User collection
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
-        // If no address is found for the userId
+        // Fetch the user's address from the Address collection
+        const address = await Address.findOne({ userId });
         if (!address) {
             return res.status(404).json({ error: 'Address not found for this user' });
         }
 
-        // Return the found address document
+        // Return the user details along with the address
         return res.status(200).json({
-            userId: address.userId,
+            name: user.name,
+            email: user.email,
+            mobile: user.mobile,
+            password: user.password, // Be cautious about sending passwords in response
             address: address.address, // The array of addresses for this user
         });
 
     } catch (error) {
-        console.error('Error fetching address:', error);
+        console.error('Error fetching user details or address:', error);
         return res.status(500).json({
-            error: 'Failed to fetch address',
+            error: 'Failed to fetch user details or address',
             details: error.message, // Send the error message for debugging
         });
     }

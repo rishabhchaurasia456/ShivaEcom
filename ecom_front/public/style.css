@@ -89,18 +89,19 @@ Why image CSS
 .why_section {
     margin-top: 40px;
 }
+
 .why_img {
     margin: auto;
     display: flex;
     justify-content: center;
 }
 
-.why_heading{
+.why_heading {
     margin-top: 10px;
     text-align: center;
 }
 
-.why_para{
+.why_para {
     margin-top: 10px;
     text-align: center;
 }
@@ -200,29 +201,84 @@ User Footer CSS
 }
 
 
+/* ------------------------------------------
+User Order CSS
+------------------------------------------ */
+/* App.css */
+/* .container {
+    max-width: 900px;
+    margin: 0 auto;
+  } */
+
+.order-header {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.loading-text,
+.error-text {
+    text-align: center;
+    font-size: 18px;
+    color: #ff6347;
+    /* Tomato color */
+}
+
+.no-orders {
+    text-align: center;
+    font-size: 18px;
+    color: #888;
+}
+
+.order-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.order-items-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.order-item {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.shipping-address p {
+    margin: 5px 0;
+}
 
 
 
 /* language translate */
-  .VIpgJd-ZVi9od-ORHb-OEVmcd{
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
     display: none !important;
-  }
+}
 
-  /* Attempts to hide the Google branding */
+/* Attempts to hide the Google branding */
 #google_translate_element .goog-logo-link {
     display: none !important;
-  }
-  
-  #google_translate_element .goog-te-gadget span {
-    display: none !important;
-  }
+}
 
-  .VIpgJd-ZVi9od-l4eHX-hSRGPd, .VIpgJd-ZVi9od-l4eHX-hSRGPd:link{
+#google_translate_element .goog-te-gadget span {
+    display: none !important;
+}
+
+.VIpgJd-ZVi9od-l4eHX-hSRGPd,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd:link {
     display: none;
-  }
+}
 
 
-  .goog-te-gadget {
+.goog-te-gadget {
     /* color: transparent !important; */
     font-size: 0px !important;
-  }
+}

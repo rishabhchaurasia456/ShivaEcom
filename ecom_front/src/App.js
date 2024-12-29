@@ -20,6 +20,7 @@ import MyAccount from './Components/MyAccount';
 import Checkout from './Components/Checkout';
 import Address from './Components/Address';
 import User_Order from './Components/User_Order';
+import AdminOrders from './AdminComponent/AdminOrders';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -139,9 +140,14 @@ function App() {
 
           <Route path='/admin/edit_listing/:id' element={
             <AdminLayout>
-              {/* <NewListingForm/> */}
               {/* <NewListingForm isEditMode={true} /> */}
               <EditProductdetails />
+            </AdminLayout>
+          } />
+
+          <Route path='/admin/myorders' element={
+            <AdminLayout>
+              <AdminOrders />
             </AdminLayout>
           } />
         </Routes>
