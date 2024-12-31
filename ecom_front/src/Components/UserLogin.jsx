@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios
+import config from '../config';
 
 const UserLogin = () => {
     const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ const UserLogin = () => {
 
         try {
             // Send POST request to the backend using Axios
-            const response = await axios.post("http://localhost:8000/api/user/get_user_login", userData);
+            const response = await axios.post(`${config.API_BASE_URL}/api/user/get_user_login`, userData);
             console.log(response)
 
             // Check if login was successful

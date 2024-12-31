@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import config from '../config';
 
 const NewListingForm = () => {
   const navigate = useNavigate(); // To handle navigation
@@ -78,7 +79,7 @@ const NewListingForm = () => {
         console.log(`${pair[0]}: ${pair[1]}`);
       }
 
-      const response = await axios.post('http://localhost:8000/api/admin/entry_products', finalFormData, {
+      const response = await axios.post(`${config.API_BASE_URL}/api/admin/entry_products`, finalFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

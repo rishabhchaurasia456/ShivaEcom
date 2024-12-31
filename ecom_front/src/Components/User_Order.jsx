@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import OrderCard from './OrderCard';
+import config from '../config';
 
 const User_Order = () => {
   const [orders, setOrders] = useState([]);
@@ -13,7 +14,7 @@ const User_Order = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.post(`http://localhost:8000/api/user/user_orders/${userId}`);
+        const response = await axios.post(`${config.API_BASE_URL}/api/user/user_orders/${userId}`);
         setOrders(response.data.orders);
         setLoading(false);
       } catch (err) {

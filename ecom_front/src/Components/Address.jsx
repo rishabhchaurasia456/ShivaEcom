@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import config from '../config';
 
 const Address = () => {
     const navigate = useNavigate()
@@ -30,7 +31,7 @@ const Address = () => {
 
         try {
             // Make a POST request to your API
-            const response = await axios.post('http://localhost:8000/api/user/add_user_address', formData);
+            const response = await axios.post(`${config.API_BASE_URL}/api/user/add_user_address`, formData);
 
             const result = await response.json();
 

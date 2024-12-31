@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import config from '../config';
 
 const UserRegister = () => {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ const UserRegister = () => {
     const submitUserData = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/api/user/get_user_reg', userFormData);
+            const response = await axios.post(`${config.API_BASE_URL}/api/user/get_user_reg`, userFormData);
             if (response.status === 201) {
                 setError('');
                 setStage(2); // Move to OTP verification stage
@@ -38,7 +39,7 @@ const UserRegister = () => {
     const verifyOtp = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/api/user/verify_otp', {
+            const response = await axios.post(`${config.API_BASE_URL}/api/user/verify_otp`, {
                 email: userFormData.email,
                 otp,
             });

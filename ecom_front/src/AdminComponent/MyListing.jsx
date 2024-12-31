@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import config from '../config';
 
 const MyListing = () => {
     const [listing, setListing] = useState([]);
@@ -8,7 +9,7 @@ const MyListing = () => {
     useEffect(() => {
         const fetchListing = async () => {
             try {
-                const resProduct = await axios.post("http://localhost:8000/api/admin/get_products");
+                const resProduct = await axios.post(`${config.API_BASE_URL}/api/admin/get_products`);
                 const allproduct = resProduct.data.getallproduct
                 setListing(allproduct);  // Set the fetched products in state
             } catch (error) {
@@ -19,7 +20,7 @@ const MyListing = () => {
         fetchListing();
     }, []);
 
-    const baseURL = 'http://localhost:8000/';
+    const baseURL = `${config.API_BASE_URL}/`;
 
     return (
         <div>

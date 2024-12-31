@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; // Import useLocation
+import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import useLocation
+import config from '../config';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Checkout = () => {
   useEffect(() => {
     const getuserdetails = async () => {
       try {
-        const response = await axios.post(`http://localhost:8000/api/user/get_user_details/${userId}`);
+        const response = await axios.post(`${config.API_BASE_URL}/api/user/get_user_details/${userId}`);
         setUserDetails(response.data.address);
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -39,7 +40,7 @@ const Checkout = () => {
 
     try {
       // Call your backend to create an order and get the Razorpay order ID
-      const response = await axios.post('http://localhost:8000/api/user/payment/order_payment', {
+      const response = await axios.post(`${config.API_BASE_URL}/api/user/payment/order_payment`, {
         amount: totalAmount * 100, // Amount in paise (Razorpay expects paise, not rupees)
         userId,
       });
@@ -54,12 +55,6 @@ const Checkout = () => {
         name: 'Your Store Name',
         description: 'Order Payment',
         order_id: orderId,
-        // handler: function (response) {
-        //   // Handle success
-        //   alert('Payment successful!');
-        //   console.log(response);
-        //   // You can send payment details to the backend here for further processing
-        // },
 
         handler: async function (paymentResponse) {
           // Handle payment success
@@ -68,7 +63,7 @@ const Checkout = () => {
 
           // Call the API to clear the cart after successful payment
           try {
-            await axios.delete(`http://localhost:8000/api/user/clear_cart/${userId}`);
+            await axios.delete(`${config.API_BASE_URL}/api/user/clear_cart/${userId}`);
 
             // Clear the cart from localStorage
             localStorage.removeItem('cart');
@@ -82,7 +77,7 @@ const Checkout = () => {
 
           // Place the order after payment completion
           try {
-            await axios.post('http://localhost:8000/api/user/user_place_order', {
+            await axios.post(`${config.API_BASE_URL}/api/user/user_place_order`, {
               userId,
               orderId,
               cart,
@@ -135,7 +130,10 @@ const Checkout = () => {
           </div>
 
           <div className="col-sm-4 offset-sm-1 mt-5">
-            <h4>Select Shipping Address</h4>
+            <div className="row">
+              <h4 className='col-8'>Select Shipping Address</h4>
+              <Link to="/address" className='col-4 btn btn-success'>Add address</Link>
+            </div>
             <form onSubmit={initiatePayment}> {/* Use onSubmit to handle form submission */}
               {Array.isArray(userDetails) && userDetails.length > 0 ? (
                 userDetails.map((item, index) => (

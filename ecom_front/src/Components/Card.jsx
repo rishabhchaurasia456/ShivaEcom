@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
+import config from '../config';
 
 const Card = ({ product }) => {
-  const baseURL = 'http://localhost:8000/'; // Update to your backend URL if needed
-
   // Use the first image in the array if it exists
   const imageUrl = product.images && product.images.length > 0
-    ? `${baseURL}${product.images[0].replace(/\\/g, '/')}` // Correct file path format for URLs
+    ? `${config.API_BASE_URL}/${product.images[0].replace(/\\/g, '/')}` // Correct file path format for URLs
     : 'default-image.jpg'; // Fallback if no image
 
   return (

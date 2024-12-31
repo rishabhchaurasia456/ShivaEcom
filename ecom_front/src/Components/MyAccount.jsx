@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import config from '../config';
 
 const MyAccount = () => {
   const [userDetails, setUserDetails] = useState(null); // Object instead of string to hold user info and address
@@ -10,7 +11,7 @@ const MyAccount = () => {
   useEffect(() => {
     const getuserdetails = async () => {
       try {
-        const response = await axios.post(`http://localhost:8000/api/user/get_user_details/${userId}`);
+        const response = await axios.post(`${config.API_BASE_URL}/api/user/get_user_details/${userId}`);
 
         console.log("User Details:", response.data); // Check if data includes user details and address
         setUserDetails(response.data); // Assuming the response has both user info and address

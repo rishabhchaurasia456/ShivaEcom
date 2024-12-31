@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Card from './Card';
+import config from '../config';
 
 const Trending = () => {
     const [products, setProducts] = useState([]);  // State to hold the products
@@ -8,7 +9,7 @@ const Trending = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const resProduct = await axios.post("http://localhost:8000/api/user/get_products");
+                const resProduct = await axios.post(`${config.API_BASE_URL}/api/user/get_products`);
                 console.log("Fetched products:", resProduct.data.getallproduct);
                 setProducts(resProduct.data.getallproduct);  // Set the fetched products in state
             } catch (error) {

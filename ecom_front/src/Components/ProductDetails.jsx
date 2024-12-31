@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
+import config from '../config';
 
 const ProductDetails = ({ cart, setCart }) => {
 
@@ -11,7 +12,7 @@ const ProductDetails = ({ cart, setCart }) => {
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
-                const response = await axios.post(`http://localhost:8000/api/user/get_products_details/${id}`);
+                const response = await axios.post(`${config.API_BASE_URL}/api/user/get_products_details/${id}`);
                 setProduct(response.data.getproductdetail);
                 setSelectedImage(response.data.getproductdetail.images[0]);
             } catch (error) {
@@ -32,14 +33,14 @@ const ProductDetails = ({ cart, setCart }) => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/api/user/cart_item_add', {
+            const response = await axios.post(`${config.API_BASE_URL}/api/user/cart_item_add`, {
                 userId,
                 productId: product._id,
             });
             console.log('Cart updated:', response.data);
 
             // Update the cart state in the parent component
-            const updatedCartResponse = await axios.post(`http://localhost:8000/api/user/user_cart/${userId}`);
+            const updatedCartResponse = await axios.post(`${config.API_BASE_URL}/api/user/user_cart/${userId}`);
             setCart(updatedCartResponse.data.cart.products || []);
         } catch (error) {
             console.error('Error adding product to cart:', error);
@@ -58,15 +59,15 @@ const ProductDetails = ({ cart, setCart }) => {
                         <aside className="col-lg-6">
                             <article className="gallery-wrap">
                                 <div className="img-big-wrap img-thumbnail">
-                                    <a data-fslightbox="mygallery" data-type="image" href={`http://localhost:8000/${selectedImage}`}>
-                                        <img src={`http://localhost:8000/${selectedImage}`} id="productimg" height="560" width="100%" alt="Product" />
+                                    <a data-fslightbox="mygallery" data-type="image" href={`${config.API_BASE_URL}/${selectedImage}`}>
+                                        <img src={`${config.API_BASE_URL}/${selectedImage}`} id="productimg" height="560" width="100%" alt="Product" />
                                     </a>
                                 </div>
                                 <div className="thumbs-wrap d-flex">
                                     {product.images.map((img, index) => (
                                         <div key={index} className="me-2">
                                             <img
-                                                src={`http://localhost:8000/${img}`}
+                                                src={`${config.API_BASE_URL}/${img}`}
                                                 width="60"
                                                 height="60"
                                                 alt={`Product ${index + 1}`}

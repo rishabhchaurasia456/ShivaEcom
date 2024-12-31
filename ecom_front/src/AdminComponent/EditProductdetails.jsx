@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import config from '../config';
 
 const EditProductDetails = () => {
   const { id } = useParams(); // Get the product ID from the URL
@@ -26,7 +27,7 @@ const EditProductDetails = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const res = await axios.post(`http://localhost:8000/api/admin/get_products_details/${id}`);
+        const res = await axios.post(`${config.API_BASE_URL}/api/admin/get_products_details/${id}`);
         const product = res.data.getproductdetail;
 
         if (product) {
@@ -105,7 +106,7 @@ const EditProductDetails = () => {
     updatedFormData.append('category', formData.category);
   
     try {
-      const response = await axios.put(`http://localhost:8000/api/admin/update_product/${id}`, updatedFormData, {
+      const response = await axios.put(`${config.API_BASE_URL}/api/admin/update_product/${id}`, updatedFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -153,7 +154,7 @@ const EditProductDetails = () => {
           {formData.existingImages.map((image, index) => (
             <div key={index} className="mb-2">
               <img
-                src={`http://localhost:8000/${image}`}
+                src={`${config.API_BASE_URL}/${image}`}
                 alt={`editimg ${index + 1}`}
                 style={{ width: '100px', height: '100px', marginRight: '10px' }}
               />

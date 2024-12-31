@@ -21,6 +21,7 @@ import Checkout from './Components/Checkout';
 import Address from './Components/Address';
 import User_Order from './Components/User_Order';
 import AdminOrders from './AdminComponent/AdminOrders';
+import config from './config';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -33,7 +34,7 @@ function App() {
       if (!userId) return;
 
       try {
-        const response = await axios.post(`http://localhost:8000/api/user/user_cart/${userId}`);
+        const response = await axios.post(`${config.API_BASE_URL}/api/user/user_cart/${userId}`);
         setCart(response.data.cart.products || []);
       } catch (error) {
         console.error('Error fetching cart:', error);

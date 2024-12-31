@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import config from '../config';
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
@@ -13,7 +14,7 @@ const Cart = () => {
   const fetchCart = async () => {
     try {
       setLoading(true);
-      const response = await axios.post(`http://localhost:8000/api/user/user_cart/${userId}`);
+      const response = await axios.post(`${config.API_BASE_URL}/api/user/user_cart/${userId}`);
       setCart(response.data.cart.products || []);
     } catch (error) {
       console.error('Failed to fetch cart:', error);
@@ -22,12 +23,12 @@ const Cart = () => {
     }
   };
 
-  const baseURL = 'http://localhost:8000/'; // Update to your backend URL if needed
+  const baseURL = `${config.API_BASE_URL}/`; // Update to your backend URL if needed
 
   // Add product to cart
   const handleAddToCart = async (productId) => {
     try {
-      await axios.post('http://localhost:8000/api/user/cart_item_add', { userId, productId });
+      await axios.post(`${config.API_BASE_URL}/api/user/cart_item_add`, { userId, productId });
       fetchCart(); // Refresh the cart after update
     } catch (error) {
       console.error('Failed to add product to cart:', error);
@@ -37,7 +38,7 @@ const Cart = () => {
   // Remove product from cart or decrease quantity
   const handleRemoveFromCart = async (productId) => {
     try {
-      await axios.post('http://localhost:8000/api/user/cart_item_remove', { userId, productId });
+      await axios.post(`${config.API_BASE_URL}/api/user/cart_item_remove`, { userId, productId });
       fetchCart(); // Refresh the cart after update
     } catch (error) {
       console.error('Failed to remove product from cart:', error);
@@ -46,7 +47,7 @@ const Cart = () => {
 
   const handleDeleteFromCart = async (productId) => {
     try {
-      await axios.post('http://localhost:8000/api/user/cart_item_delete', { userId, productId });
+      await axios.post(`${config.API_BASE_URL}/api/user/cart_item_delete`, { userId, productId });
       fetchCart(); // Refresh the cart after update
     } catch (error) {
       console.error('Failed to remove product from cart:', error);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
+import config from '../config';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -14,7 +15,7 @@ const AdminOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/admin/get_orders');
+      const response = await axios.post(`${config.API_BASE_URL}/api/admin/get_orders`);
       setOrders(response.data);
       setLoading(false);
     } catch (error) {
@@ -70,7 +71,7 @@ const AdminOrders = () => {
     doc.save('Selected_Orders_Labels.pdf');
 
     try {
-      await axios.post('http://localhost:8000/api/admin/update_order_status', {
+      await axios.post(`${config.API_BASE_URL}/api/admin/update_order_status`, {
         orderIds: selectedOrders,
         status: 'Handover',
       });
@@ -152,7 +153,7 @@ const AdminOrders = () => {
                             <td className="col-8">
                               {item.productId.images && item.productId.images[0] && (
                                 <img
-                                  src={`http://localhost:8000/${item.productId.images[0].replace(/\\/g, '/')}`}
+                                  src={`${config.API_BASE_URL}/${item.productId.images[0].replace(/\\/g, '/')}`}
                                   alt="Product"
                                   style={{ width: '50px', marginRight: '10px' }}
                                 />

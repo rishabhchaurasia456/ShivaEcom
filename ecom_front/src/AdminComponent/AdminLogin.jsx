@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import config from '../config';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ const AdminLogin = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:8000/api/admin/admin_login', loginData, {
+            const response = await axios.post(`${config.API_BASE_URL}/api/admin/admin_login`, loginData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
