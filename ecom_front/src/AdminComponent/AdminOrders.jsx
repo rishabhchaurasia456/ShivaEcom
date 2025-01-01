@@ -83,7 +83,9 @@ const AdminOrders = () => {
     }
   };
 
-  const filteredOrders = orders.filter(order => order.status === currentTab);
+  // Separate filtered orders for Pending and Handover tabs
+  const pendingOrders = orders.filter(order => order.status === 'Pending');
+  const handoverOrders = orders.filter(order => order.status === 'Handover');
 
   if (loading) {
     return <div>Loading orders...</div>;
@@ -95,23 +97,35 @@ const AdminOrders = () => {
         <h2>Admin Orders</h2>
 
         <div className="tabs">
+          {/* Button for Pending Tab */}
           <button
-            className={`btn ${currentTab === 'Pending' ? 'btn-primary' : 'btn-secondary'}`}
+            className='btn btn-outline-primary'
             onClick={() => setCurrentTab('Pending')}
           >
-            Pending
+            {pendingOrders.length}<br />
+            Pending Orders
           </button>&nbsp;
+
+          {/* Button for Handover Tab */}
           <button
-            className={`btn ${currentTab === 'Handover' ? 'btn-primary' : 'btn-secondary'}`}
+            className='btn btn-outline-primary'
             onClick={() => setCurrentTab('Handover')}
           >
-            Handover
+            {handoverOrders.length}<br />
+            Handover Orders
           </button>
         </div>
 
-        {filteredOrders.length === 0 ? (
-          <p>No {currentTab.toLowerCase()} orders found.</p>
-        ) : (
+        {/* No orders found message */}
+        {currentTab === 'Pending' && pendingOrders.length === 0 && (
+          <p>No pending orders found.</p>
+        )}
+        {currentTab === 'Handover' && handoverOrders.length === 0 && (
+          <p>No handover orders found.</p>
+        )}
+
+        {/* Show orders table if there are orders */}
+        {currentTab === 'Pending' && pendingOrders.length > 0 && (
           <>
             {currentTab === 'Pending' && (
               <button
@@ -125,7 +139,7 @@ const AdminOrders = () => {
             <table className="table">
               <thead>
                 <tr>
-                  {currentTab === 'Pending' && <th>Select</th>}
+                  <th>Select</th>
                   <th>Order ID</th>
                   <th>Items</th>
                   <th>Total Amount</th>
@@ -134,17 +148,15 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredOrders.map(order => (
+                {pendingOrders.map(order => (
                   <tr key={order._id}>
-                    {currentTab === 'Pending' && (
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={selectedOrders.includes(order._id)}
-                          onChange={() => handleSelectOrder(order._id)}
-                        />
-                      </td>
-                    )}
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedOrders.includes(order._id)}
+                        onChange={() => handleSelectOrder(order._id)}
+                      />
+                    </td>
                     <td>{order._id}</td>
                     <td>
                       {order.items.map((item, index) => (
@@ -160,7 +172,7 @@ const AdminOrders = () => {
                               )}
                               {item.productId.title}
                             </td>
-                            <td className='col-4'>
+                            <td className="col-4">
                               - {item.productId.price} x {item.quantity}
                             </td>
                           </div>
@@ -176,10 +188,54 @@ const AdminOrders = () => {
             </table>
           </>
         )}
+
+        {currentTab === 'Handover' && handoverOrders.length > 0 && (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Items</th>
+                <th>Total Amount</th>
+                <th>User</th>
+                <th>Payment Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {handoverOrders.map(order => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>
+                    {order.items.map((item, index) => (
+                      <div key={index}>
+                        <div className="row">
+                          <td className="col-8">
+                            {item.productId.images && item.productId.images[0] && (
+                              <img
+                                src={`${config.API_BASE_URL}/${item.productId.images[0].replace(/\\/g, '/')}`}
+                                alt="Product"
+                                style={{ width: '50px', marginRight: '10px' }}
+                              />
+                            )}
+                            {item.productId.title}
+                          </td>
+                          <td className="col-4">
+                            - {item.productId.price} x {item.quantity}
+                          </td>
+                        </div>
+                      </div>
+                    ))}
+                  </td>
+                  <td>${order.totalAmount}</td>
+                  <td>{order.userId.name}</td>
+                  <td>{order.paymentStatus}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
 };
 
 export default AdminOrders;
-

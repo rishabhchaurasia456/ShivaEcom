@@ -118,9 +118,16 @@ const Checkout = () => {
               <div className="card-body">
                 {cart && cart.map((item) => (
                   <div key={item.productId._id}>
-                    <h5>{item.productId.title}</h5>
-                    <p>Quantity: {item.quantity}</p>
-                    <p>Price: Rs. {item.productId.price}</p>
+                    <div className="row">
+                      <div className="col-sm-4 col-md-6 col-lg-4">
+                        <img src={`${config.API_BASE_URL}/${item.productId.images[0].replace(/\\/g, '/')}`} width="150px" />
+                      </div>
+                      <div className="col-sm-8 col-md-6 col-lg-8">
+                        <h5>{item.productId.title}</h5>
+                        <p>Quantity: {item.quantity}</p>
+                        <p>Price: Rs. {item.productId.price}</p>
+                      </div>
+                    </div>
                   </div>
                 ))}
                 <p className="ms-3 fw-bold">Total Cost = Rs. {totalAmount}</p>

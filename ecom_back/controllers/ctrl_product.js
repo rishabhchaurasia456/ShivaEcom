@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const User = require('../models/user');
 
 const ctrl_Product_entry = async (req, res) => {
     try {
@@ -146,10 +147,58 @@ const ctrl_edit_Product = async (req, res) => {
     }
 };
 
+const ctrl_review_Product = async (req, res) => {
+    const { productId, userId, rating, comment } = req.body;
+
+    try {
+        // Input validation
+        if (!productId || !userId || !rating || !comment) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        // Validate the rating (between 1 and 5)
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+        }
+
+        // Find the product by ID
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if the user already reviewed this product
+        const existingReview = product.reviews.find(review => review.userId.toString() === userId);
+        if (existingReview) {
+            return res.status(400).json({ message: 'You have already reviewed this product' });
+        }
+
+        // Create a new review
+        const newReview = {
+            userId,
+            rating,
+            comment,
+        };
+
+        // Add the new review to the product's reviews array
+        product.reviews.push(newReview);
+
+        // Save the updated product document
+        await product.save();
+
+        // Optionally, you can also calculate and update the average rating or review count on the product if necessary
+
+        return res.status(200).json({ message: 'Review submitted successfully' });
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 module.exports = {
     ctrl_Product_entry,
     ctrl_Product_get,
     ctrl_Product_details,
-    ctrl_edit_Product
+    ctrl_edit_Product,
+    ctrl_review_Product,
 };
