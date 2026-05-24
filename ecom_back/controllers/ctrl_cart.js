@@ -164,10 +164,72 @@ const ctrl_clear_UserCart = async (req, res) => {
 };
 
 
+const getAllData = async (req, res) => {
+    try {
+        const filter = {
+            userId: new mongoose.Types.ObjectId(req.query.userId)
+        }
+        console.log(filter, "Filter")
+        const aggregationPipeline = [
+            {
+                $match: filter
+            },
+            {
+                $lookup: {
+                    "from": "users",
+                    "localField": "userId",
+                    "foreignField": "_id",
+                    "as": "UserResult"
+                }
+            },
+            {
+                $unwind: "$UserResult"
+            },
+            {
+                $unwind: "$products"
+            },
+            {
+                $lookup: {
+                    "from": "Product",
+                    "localField": "products.productId",
+                    "foreignField": "_id",
+                    "as": "ProductResult"
+                }
+            },
+            {
+                $unwind: "$ProductResult"
+            },
+            {
+                $project: {
+                    "name": "$UserResult.name",
+                    "email": "$UserResult.email",
+                    "productId": "$products.productId",
+                    "title": "$ProductResult.title",
+                    "sku": "$ProductResult.sku",
+                    "price": "$ProductResult.price",
+                    "mrp": "$ProductResult.mrp",
+                    "listingStatus": "$ProductResult.listingStatus",
+                    "category": "$ProductResult.stock.category",
+                    "description": "$ProductResult.stock.desc",
+                    "images": "$ProductResult.images"
+                }
+            }
+        ]
+
+        const result = await Cart.aggregate(aggregationPipeline);
+        res.status(200).json({ result });
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
 module.exports = {
     ctrl_cart_item_add,
     ctrl_cart_item_remove,
     ctrl_user_cart,
     ctrl_cart_item_delete,
-    ctrl_clear_UserCart
+    ctrl_clear_UserCart,
+    getAllData
 }

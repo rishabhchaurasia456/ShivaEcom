@@ -56,10 +56,47 @@ const ctrl_Product_entry = async (req, res) => {
     }
 };
 
+// const ctrl_Product_get = async (req, res) => {
+//     try {
+//         const getallproduct = await Product.find()
+//         res.status(200).json({ message: "Product fetch successfully", getallproduct })
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server error', error });
+//     }
+// }
+
 const ctrl_Product_get = async (req, res) => {
     try {
-        const getallproduct = await Product.find()
-        res.status(200).json({ message: "Product fetch successfully", getallproduct })
+        const { priceRange, category, size } = req.body;
+
+        // Initialize filters object
+        let filters = {};
+
+        // Apply price range filter if priceRange is provided
+        if (priceRange && priceRange.length === 2) {
+            filters.price = { $gte: priceRange[0], $lte: priceRange[1] };  // price between min and max
+        }
+
+        // Apply category filter if category is provided
+        if (category) {
+            filters.category = category;
+        }
+
+        // Apply size filter if size is provided
+        if (size) {
+            filters.size = size;
+        }
+
+        // Log the filter object to check what you're sending
+        console.log("Filters applied:", filters);
+
+        // Fetch the products from the database with the filters applied (if any)
+        const getallproduct = await Product.find(filters);
+
+        console.log("Fetched products:", getallproduct);  // Log the results
+
+        // Return the filtered products
+        res.status(200).json({ message: "Product fetch successfully", getallproduct });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

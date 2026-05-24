@@ -23,6 +23,14 @@ const ProductDetails = ({ cart, setCart }) => {
         fetchProductDetails();
     }, [id]);
 
+    const averageRating = product? product.reviews.length > 0
+            ? (
+                  product.reviews.reduce((sum, review) => sum + Number(review.rating), 0) /
+                  product.reviews.length
+              ).toFixed(1)
+            : '0.0'
+        : '0.0';
+
     const addToCart = async () => {
         const rawUserId = localStorage.getItem('userId'); // Fetch raw userId from local storage
         const userId = rawUserId?.replace(/^"|"$/g, ''); // Remove any surrounding quotes
@@ -86,7 +94,7 @@ const ProductDetails = ({ cart, setCart }) => {
                             <article className="ps-lg-3">
                                 <h4 className="title text-dark">{product.title} </h4>
                                 <div className="rating-wrap my-3">
-                                    <b className="label-rating text-warning fa fa-star"> 4.5 Rating</b>
+                                    <b className="label-rating text-warning fa fa-star">{averageRating} / 5.0 Overall Rating ({product.reviews.length} Reviews)</b>
                                 </div>
 
                                 <div className="mb-3">

@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { ctrl_user_reg, ctrl_user_login, ctrl_user_request_reset, ctrl_user_forget_password, ctrl_verify_otp } = require("../controllers/ctrl_login");
 const { ctrl_Product_get, ctrl_Product_details, ctrl_review_Product } = require('../controllers/ctrl_product');
-const { ctrl_cart_item_delete, ctrl_cart_item_add, ctrl_cart_item_remove, ctrl_user_cart, ctrl_clear_UserCart } = require('../controllers/ctrl_cart');
+const { ctrl_cart_item_delete, ctrl_cart_item_add, ctrl_cart_item_remove, ctrl_user_cart, ctrl_clear_UserCart, getAllData } = require('../controllers/ctrl_cart');
 const { ctrl_user_address, ctrl_get_user_details } = require('../controllers/ctrl_address');
 const { ctrl_user_order_placed, ctrl_get_UserOrders } = require('../controllers/ctrl_order');
 
@@ -24,5 +24,5 @@ router.post('/user_place_order', ctrl_user_order_placed);
 router.post('/user_orders/:userId', ctrl_get_UserOrders);
 router.post('/get_user_details/:userId', ctrl_get_user_details);
 router.post('/reviews', ctrl_review_Product);
-
+router.get('/all-data', getAllData)
 module.exports = router;
