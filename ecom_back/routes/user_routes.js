@@ -25,6 +25,4 @@ router.post('/user_orders/:userId', ctrl_get_UserOrders);
 router.post('/get_user_details/:userId', ctrl_get_user_details);
 router.post('/reviews', ctrl_review_Product);
 router.get('/all-data', getAllData)
-
-console.log("User routes loaded");
 module.exports = router;
